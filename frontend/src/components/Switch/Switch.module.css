@@ -1,0 +1,50 @@
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.root {
+  width: 2.5rem;
+  height: 1.375rem;
+  border-radius: 9999px;
+  border: none;
+  background: var(--color-border);
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.root[data-state="checked"] {
+  background: var(--color-primary);
+}
+
+.root:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.thumb {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+  transform: translateX(3px);
+  will-change: transform;
+}
+
+.thumb[data-state="checked"] {
+  transform: translateX(1.25rem);
+}
+
+.label {
+  font-size: 0.875rem;
+  color: var(--color-fg);
+  cursor: pointer;
+  user-select: none;
+}
