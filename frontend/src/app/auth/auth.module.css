@@ -1,0 +1,56 @@
+.card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.cardHeader {
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-fg);
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.formError {
+  font-size: 0.875rem;
+  color: var(--color-danger);
+  padding: 0.625rem 0.75rem;
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-danger) 30%, transparent);
+  border-radius: var(--radius);
+}
+
+.submitButton {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.switchAuth {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.switchLink {
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.switchLink:hover {
+  text-decoration: underline;
+}
