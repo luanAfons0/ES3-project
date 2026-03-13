@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/Button/Button";
 import { Card } from "@/components/Card/Card";
@@ -8,6 +9,7 @@ import { Input } from "@/components/Input/Input";
 import styles from "../auth.module.css";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,8 +22,22 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      // TODO: connect to POST /auth/register
-      console.log("Register", { name, email, password });
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message ?? "Something went wrong. Please try again.");
+        return;
+      }
+
+      // TODO: replace with auth context / cookie when backend is connected
+      localStorage.setItem("token", data.token);
+      router.push("/dashboard");
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/Button/Button";
 import { Card } from "@/components/Card/Card";
@@ -8,6 +9,7 @@ import { Input } from "@/components/Input/Input";
 import styles from "../auth.module.css";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -19,10 +21,24 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // TODO: connect to POST /auth/login
-      console.log("Login", { email, password });
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message ?? "Invalid email or password. Please try again.");
+        return;
+      }
+
+      // TODO: replace with auth context / cookie when backend is connected
+      localStorage.setItem("token", data.token);
+      router.push("/dashboard");
     } catch {
-      setError("Invalid email or password. Please try again.");
+      setError("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
     }
