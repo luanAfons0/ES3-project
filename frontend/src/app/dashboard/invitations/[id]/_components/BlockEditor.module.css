@@ -1,0 +1,105 @@
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.block {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+}
+
+.dragHandle {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: grab;
+  color: var(--color-muted);
+  font-size: 1.125rem;
+  padding: 0.125rem 0.25rem;
+  line-height: 1;
+  touch-action: none;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.typeBadge {
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  border-radius: calc(var(--radius) / 2);
+  padding: 0.2rem 0.5rem;
+  margin-top: 0.2rem;
+}
+
+.blockContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.textarea,
+.input {
+  width: 100%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-fg);
+  font-family: inherit;
+  resize: vertical;
+}
+
+.textarea:focus,
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -1px;
+}
+
+.removeButton {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  padding: 0.25rem;
+  line-height: 1;
+  margin-top: 0.125rem;
+}
+
+.removeButton:hover {
+  color: var(--color-danger);
+}
+
+.empty {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  text-align: center;
+  padding-block: 1.5rem;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+}
+
+.typePicker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.typePickerLabel {
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+}
