@@ -3,7 +3,7 @@
 ```mermaid
 erDiagram
     USUARIOS {
-        uuid        id            PK
+        serial      id            PK
         varchar     nome
         varchar     email         UK
         varchar     hash_senha
@@ -12,8 +12,8 @@ erDiagram
     }
 
     CONVITES {
-        uuid        id            PK
-        uuid        usuario_id    FK
+        serial      id            PK
+        int         usuario_id    FK
         varchar     titulo
         varchar     slug          UK
         timestamp   data_evento
@@ -26,8 +26,8 @@ erDiagram
     }
 
     BLOCOS_CONVITE {
-        uuid        id            PK
-        uuid        convite_id    FK
+        serial      id            PK
+        int         convite_id    FK
         tipo_bloco  tipo
         jsonb       conteudo
         int         posicao
@@ -36,16 +36,16 @@ erDiagram
     }
 
     CONVIDADOS {
-        uuid        id            PK
-        uuid        convite_id    FK
+        serial      id            PK
+        int         convite_id    FK
         varchar     nome
         varchar     email
         timestamp   criado_em
     }
 
     CONFIRMACOES {
-        uuid                id            PK
-        uuid                convidado_id  FK "UK"
+        serial              id            PK
+        int                 convidado_id  FK "UK"
         status_confirmacao  status
         timestamp           respondido_em
         timestamp           criado_em

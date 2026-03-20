@@ -21,26 +21,26 @@ Enum status_confirmacao {
 // ── Tabelas ───────────────────────────────────────────────────
 
 Table usuarios {
-  id          uuid         [pk, default: `gen_random_uuid()`, note: 'Identificador único do criador']
-  nome        varchar(255) [not null,                         note: 'Nome completo do usuário']
-  email       varchar(255) [unique, not null,                 note: 'E-mail de login — único no sistema']
-  hash_senha  varchar(255) [not null,                         note: 'Hash bcrypt da senha']
-  criado_em   timestamp    [not null, default: `now()`]
-  atualizado_em timestamp  [not null, default: `now()`]
+  id            serial       [pk, increment,                        note: 'Identificador único do criador']
+  nome          varchar(255) [not null,                             note: 'Nome completo do usuário']
+  email         varchar(255) [unique, not null,                     note: 'E-mail de login — único no sistema']
+  hash_senha    varchar(255) [not null,                             note: 'Hash bcrypt da senha']
+  criado_em     timestamp    [not null, default: `now()`]
+  atualizado_em timestamp    [not null, default: `now()`]
 
   note: 'Contas dos criadores de convites'
 }
 
 Table convites {
-  id              uuid         [pk, default: `gen_random_uuid()`]
-  usuario_id      uuid         [not null, ref: > usuarios.id,     note: 'Criador do convite']
-  titulo          varchar(255) [not null,                          note: 'Título do evento']
-  slug            varchar(100) [unique, not null,                  note: 'Identificador único para URL pública (ex.: festa-joao-2026)']
-  data_evento     timestamp    [                                    note: 'Data e hora do evento']
-  local_evento    varchar(500) [                                    note: 'Local do evento (endereço ou nome do local)']
-  descricao       text         [                                    note: 'Descrição geral do evento']
-  url_imagem_capa text         [                                    note: 'URL da imagem de capa do convite']
-  ativo           boolean      [not null, default: true,            note: 'Controla se o convite é acessível publicamente']
+  id              serial       [pk, increment]
+  usuario_id      int          [not null, ref: > usuarios.id,       note: 'Criador do convite']
+  titulo          varchar(255) [not null,                            note: 'Título do evento']
+  slug            varchar(100) [unique, not null,                    note: 'Identificador único para URL pública (ex.: festa-joao-2026)']
+  data_evento     timestamp    [                                      note: 'Data e hora do evento']
+  local_evento    varchar(500) [                                      note: 'Local do evento (endereço ou nome do local)']
+  descricao       text         [                                      note: 'Descrição geral do evento']
+  url_imagem_capa text         [                                      note: 'URL da imagem de capa do convite']
+  ativo           boolean      [not null, default: true,              note: 'Controla se o convite é acessível publicamente']
   criado_em       timestamp    [not null, default: `now()`]
   atualizado_em   timestamp    [not null, default: `now()`]
 
@@ -48,11 +48,11 @@ Table convites {
 }
 
 Table blocos_convite {
-  id            uuid        [pk, default: `gen_random_uuid()`]
-  convite_id    uuid        [not null, ref: > convites.id,     note: 'Convite ao qual o bloco pertence']
-  tipo          tipo_bloco  [not null,                          note: 'Tipo do bloco de conteúdo']
-  conteudo      jsonb       [not null,                          note: 'Conteúdo do bloco em formato JSON (estrutura varia por tipo)']
-  posicao       int         [not null,                          note: 'Ordem de exibição do bloco na página (inicia em 0)']
+  id            serial      [pk, increment]
+  convite_id    int         [not null, ref: > convites.id,          note: 'Convite ao qual o bloco pertence']
+  tipo          tipo_bloco  [not null,                               note: 'Tipo do bloco de conteúdo']
+  conteudo      jsonb       [not null,                               note: 'Conteúdo do bloco em formato JSON (estrutura varia por tipo)']
+  posicao       int         [not null,                               note: 'Ordem de exibição do bloco na página (inicia em 0)']
   criado_em     timestamp   [not null, default: `now()`]
   atualizado_em timestamp   [not null, default: `now()`]
 
@@ -64,10 +64,10 @@ Table blocos_convite {
 }
 
 Table convidados {
-  id            uuid         [pk, default: `gen_random_uuid()`]
-  convite_id    uuid         [not null, ref: > convites.id,    note: 'Convite ao qual o convidado pertence']
-  nome          varchar(255) [not null,                         note: 'Nome do convidado']
-  email         varchar(255) [not null,                         note: 'E-mail usado para verificação de acesso']
+  id            serial       [pk, increment]
+  convite_id    int          [not null, ref: > convites.id,         note: 'Convite ao qual o convidado pertence']
+  nome          varchar(255) [not null,                              note: 'Nome do convidado']
+  email         varchar(255) [not null,                              note: 'E-mail usado para verificação de acesso']
   criado_em     timestamp    [not null, default: `now()`]
 
   indexes {
@@ -78,12 +78,12 @@ Table convidados {
 }
 
 Table confirmacoes {
-  id            uuid                [pk, default: `gen_random_uuid()`]
-  convidado_id  uuid                [unique, not null, ref: - convidados.id, note: 'Cada convidado tem no máximo uma confirmação']
-  status        status_confirmacao  [not null, default: `pendente`,           note: 'Status atual da resposta']
-  respondido_em timestamp          [                                           note: 'Momento em que o convidado registrou ou atualizou a resposta']
-  criado_em     timestamp          [not null, default: `now()`]
-  atualizado_em timestamp          [not null, default: `now()`]
+  id            serial             [pk, increment]
+  convidado_id  int                [unique, not null, ref: - convidados.id, note: 'Cada convidado tem no máximo uma confirmação']
+  status        status_confirmacao [not null, default: `pendente`,           note: 'Status atual da resposta']
+  respondido_em timestamp         [                                           note: 'Momento em que o convidado registrou ou atualizou a resposta']
+  criado_em     timestamp         [not null, default: `now()`]
+  atualizado_em timestamp         [not null, default: `now()`]
 
   note: 'Respostas de presença dos convidados. Relação 1:1 com convidados.'
 }

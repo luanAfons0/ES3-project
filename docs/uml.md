@@ -5,7 +5,7 @@ classDiagram
     direction TB
 
     class Usuarios {
-        +UUID id
+        +Int id
         +String nome
         +String email
         +String hash_senha
@@ -14,8 +14,8 @@ classDiagram
     }
 
     class Convites {
-        +UUID id
-        +UUID usuario_id
+        +Int id
+        +Int usuario_id
         +String titulo
         +String slug
         +DateTime data_evento
@@ -28,8 +28,8 @@ classDiagram
     }
 
     class BlocosConvite {
-        +UUID id
-        +UUID convite_id
+        +Int id
+        +Int convite_id
         +TipoBloco tipo
         +JSON conteudo
         +Int posicao
@@ -38,16 +38,16 @@ classDiagram
     }
 
     class Convidados {
-        +UUID id
-        +UUID convite_id
+        +Int id
+        +Int convite_id
         +String nome
         +String email
         +DateTime criado_em
     }
 
     class Confirmacoes {
-        +UUID id
-        +UUID convidado_id
+        +Int id
+        +Int convidado_id
         +StatusConfirmacao status
         +DateTime respondido_em
         +DateTime criado_em
