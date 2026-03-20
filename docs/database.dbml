@@ -1,68 +1,99 @@
-// Invitation Management System
-// Database Schema
+// ============================================================
+// Sistema de Gerenciamento de Convites
+// Esquema do Banco de Dados
+// Gerado em: 2026-03-20
+// ============================================================
 
-Enum block_type {
-  text
-  image
-  button
+// ── Enumerações ──────────────────────────────────────────────
+
+Enum tipo_bloco {
+  texto   [note: 'Bloco de texto rico']
+  imagem  [note: 'Bloco de imagem com URL']
+  botao   [note: 'Bloco de botão com texto e link']
 }
 
-Enum rsvp_status {
-  pending
-  confirmed
-  declined
+Enum status_confirmacao {
+  pendente    [note: 'Convidado ainda não respondeu']
+  confirmado  [note: 'Convidado confirmou presença']
+  recusado    [note: 'Convidado recusou o convite']
 }
 
-Table users {
-  id uuid [pk, default: `gen_random_uuid()`]
-  name varchar(255) [not null]
-  email varchar(255) [unique, not null]
-  password_hash varchar(255) [not null]
-  created_at timestamp [not null, default: `now()`]
-  updated_at timestamp [not null, default: `now()`]
+// ── Tabelas ───────────────────────────────────────────────────
+
+Table usuarios {
+  id          uuid         [pk, default: `gen_random_uuid()`, note: 'Identificador único do criador']
+  nome        varchar(255) [not null,                         note: 'Nome completo do usuário']
+  email       varchar(255) [unique, not null,                 note: 'E-mail de login — único no sistema']
+  hash_senha  varchar(255) [not null,                         note: 'Hash bcrypt da senha']
+  criado_em   timestamp    [not null, default: `now()`]
+  atualizado_em timestamp  [not null, default: `now()`]
+
+  note: 'Contas dos criadores de convites'
 }
 
-Table invitations {
-  id uuid [pk, default: `gen_random_uuid()`]
-  user_id uuid [not null, ref: > users.id]
-  title varchar(255) [not null]
-  slug varchar(100) [unique, not null]
-  event_date timestamp
-  event_location varchar(500)
-  description text
-  cover_image_url text
-  is_active boolean [not null, default: true]
-  created_at timestamp [not null, default: `now()`]
-  updated_at timestamp [not null, default: `now()`]
+Table convites {
+  id              uuid         [pk, default: `gen_random_uuid()`]
+  usuario_id      uuid         [not null, ref: > usuarios.id,     note: 'Criador do convite']
+  titulo          varchar(255) [not null,                          note: 'Título do evento']
+  slug            varchar(100) [unique, not null,                  note: 'Identificador único para URL pública (ex.: festa-joao-2026)']
+  data_evento     timestamp    [                                    note: 'Data e hora do evento']
+  local_evento    varchar(500) [                                    note: 'Local do evento (endereço ou nome do local)']
+  descricao       text         [                                    note: 'Descrição geral do evento']
+  url_imagem_capa text         [                                    note: 'URL da imagem de capa do convite']
+  ativo           boolean      [not null, default: true,            note: 'Controla se o convite é acessível publicamente']
+  criado_em       timestamp    [not null, default: `now()`]
+  atualizado_em   timestamp    [not null, default: `now()`]
+
+  note: 'Convites criados pelos usuários. Exclusão em cascata para blocos, convidados e confirmações.'
 }
 
-Table invitation_blocks {
-  id uuid [pk, default: `gen_random_uuid()`]
-  invitation_id uuid [not null, ref: > invitations.id]
-  type block_type [not null]
-  content jsonb [not null]
-  position int [not null]
-  created_at timestamp [not null, default: `now()`]
-  updated_at timestamp [not null, default: `now()`]
-}
-
-Table guests {
-  id uuid [pk, default: `gen_random_uuid()`]
-  invitation_id uuid [not null, ref: > invitations.id]
-  name varchar(255) [not null]
-  email varchar(255) [not null]
-  created_at timestamp [not null, default: `now()`]
+Table blocos_convite {
+  id            uuid        [pk, default: `gen_random_uuid()`]
+  convite_id    uuid        [not null, ref: > convites.id,     note: 'Convite ao qual o bloco pertence']
+  tipo          tipo_bloco  [not null,                          note: 'Tipo do bloco de conteúdo']
+  conteudo      jsonb       [not null,                          note: 'Conteúdo do bloco em formato JSON (estrutura varia por tipo)']
+  posicao       int         [not null,                          note: 'Ordem de exibição do bloco na página (inicia em 0)']
+  criado_em     timestamp   [not null, default: `now()`]
+  atualizado_em timestamp   [not null, default: `now()`]
 
   indexes {
-    (invitation_id, email) [unique]
+    (convite_id, posicao) [name: 'idx_blocos_convite_posicao', note: 'Garante ordenação eficiente dos blocos por convite']
   }
+
+  note: 'Blocos de conteúdo do convite. Reordenáveis via drag-and-drop no editor.'
 }
 
-Table rsvps {
-  id uuid [pk, default: `gen_random_uuid()`]
-  guest_id uuid [unique, not null, ref: - guests.id]
-  status rsvp_status [not null, default: `pending`]
-  responded_at timestamp
-  created_at timestamp [not null, default: `now()`]
-  updated_at timestamp [not null, default: `now()`]
+Table convidados {
+  id            uuid         [pk, default: `gen_random_uuid()`]
+  convite_id    uuid         [not null, ref: > convites.id,    note: 'Convite ao qual o convidado pertence']
+  nome          varchar(255) [not null,                         note: 'Nome do convidado']
+  email         varchar(255) [not null,                         note: 'E-mail usado para verificação de acesso']
+  criado_em     timestamp    [not null, default: `now()`]
+
+  indexes {
+    (convite_id, email) [unique, name: 'idx_convidados_convite_email', note: 'Impede e-mails duplicados no mesmo convite']
+  }
+
+  note: 'Lista de convidados por convite. O e-mail é usado como portão de acesso à página pública.'
 }
+
+Table confirmacoes {
+  id            uuid                [pk, default: `gen_random_uuid()`]
+  convidado_id  uuid                [unique, not null, ref: - convidados.id, note: 'Cada convidado tem no máximo uma confirmação']
+  status        status_confirmacao  [not null, default: `pendente`,           note: 'Status atual da resposta']
+  respondido_em timestamp          [                                           note: 'Momento em que o convidado registrou ou atualizou a resposta']
+  criado_em     timestamp          [not null, default: `now()`]
+  atualizado_em timestamp          [not null, default: `now()`]
+
+  note: 'Respostas de presença dos convidados. Relação 1:1 com convidados.'
+}
+
+// ── Relacionamentos (resumo) ──────────────────────────────────
+//
+//  usuarios       1 ──< convites         (um usuário cria vários convites)
+//  convites       1 ──< blocos_convite   (um convite tem vários blocos)
+//  convites       1 ──< convidados       (um convite tem vários convidados)
+//  convidados     1 ──1 confirmacoes     (cada convidado tem uma única confirmação)
+//
+// Exclusão em cascata: ao excluir um convite, remover em cascata
+//   blocos_convite, convidados e confirmacoes associados.
