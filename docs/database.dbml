@@ -81,7 +81,6 @@ Table confirmacoes {
   id            serial             [pk, increment]
   convidado_id  int                [unique, not null, ref: - convidados.id, note: 'Cada convidado tem no máximo uma confirmação']
   status        status_confirmacao [not null, default: `pendente`,           note: 'Status atual da resposta']
-  respondido_em timestamp         [                                           note: 'Momento em que o convidado registrou ou atualizou a resposta']
   criado_em     timestamp         [not null, default: `now()`]
   atualizado_em timestamp         [not null, default: `now()`]
 
