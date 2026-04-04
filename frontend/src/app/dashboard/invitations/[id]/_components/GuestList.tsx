@@ -3,20 +3,17 @@
 import { useState } from "react";
 import { Button } from "@/components/Button/Button";
 import { Input } from "@/components/Input/Input";
+import type { Guest, RsvpStatus } from "@/lib/types";
 import styles from "./GuestList.module.css";
 
-export type RsvpStatus = "pending" | "confirmed" | "declined";
-
-export interface Guest {
-  id: string;
-  name: string;
-  email: string;
-  rsvp: RsvpStatus;
-}
+export type { RsvpStatus, Guest } from "@/lib/types";
 
 interface GuestListProps {
   guests: Guest[];
-  onChange: (guests: Guest[]) => void;
+  onAdd: (name: string, email: string) => Promise<unknown>;
+  onRemove: (id: string) => Promise<unknown>;
+  isAdding?: boolean;
+  addError?: string;
 }
 
 const STATUS_LABEL: Record<RsvpStatus, string> = {
@@ -25,33 +22,15 @@ const STATUS_LABEL: Record<RsvpStatus, string> = {
   declined: "Declined",
 };
 
-export function GuestList({ guests, onChange }: GuestListProps) {
+export function GuestList({ guests, onAdd, onRemove, isAdding, addError }: GuestListProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
 
-  function handleAdd(e: React.FormEvent) {
+  async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
-    setError("");
-
-    if (guests.some((g) => g.email.toLowerCase() === email.toLowerCase())) {
-      setError("This email is already on the guest list.");
-      return;
-    }
-
-    const newGuest: Guest = {
-      id: crypto.randomUUID(),
-      name,
-      email,
-      rsvp: "pending",
-    };
-    onChange([...guests, newGuest]);
+    await onAdd(name, email);
     setName("");
     setEmail("");
-  }
-
-  function handleRemove(id: string) {
-    onChange(guests.filter((g) => g.id !== id));
   }
 
   return (
@@ -81,7 +60,7 @@ export function GuestList({ guests, onChange }: GuestListProps) {
                 <td className={styles.td}>
                   <button
                     className={styles.removeButton}
-                    onClick={() => handleRemove(guest.id)}
+                    onClick={() => onRemove(guest.id)}
                     aria-label={`Remove ${guest.name}`}
                   >
                     ✕
@@ -109,11 +88,11 @@ export function GuestList({ guests, onChange }: GuestListProps) {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <Button type="submit" size="sm">
-          Add guest
+        <Button type="submit" size="sm" disabled={isAdding}>
+          {isAdding ? "Adding…" : "Add guest"}
         </Button>
       </form>
-      {error && <p className={styles.formError}>{error}</p>}
+      {addError && <p className={styles.formError}>{addError}</p>}
     </div>
   );
 }

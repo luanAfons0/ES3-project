@@ -2,24 +2,12 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/Button/Button";
 import { Card } from "@/components/Card/Card";
 import { Container } from "@/components/Container/Container";
-import { apiFetch } from "@/lib/api";
+import { useGetInvitations } from "@/services/get-invitations";
+import type { Invitation } from "@/lib/types";
 import styles from "./page.module.css";
-
-interface Invitation {
-  id: string;
-  title: string;
-  slug: string;
-  eventDate: string;
-  eventLocation: string;
-  totalGuests: number;
-  confirmed: number;
-  declined: number;
-  pending: number;
-}
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", {
@@ -85,10 +73,7 @@ function InvitationCard({ invitation }: { invitation: Invitation }) {
 }
 
 export default function DashboardPage() {
-  const { data: invitations, isLoading, isError } = useQuery<Invitation[]>({
-    queryKey: ["invitations"],
-    queryFn: () => apiFetch<Invitation[]>("/api/invitations"),
-  });
+  const { data: invitations, isLoading, isError } = useGetInvitations();
 
   return (
     <Container>

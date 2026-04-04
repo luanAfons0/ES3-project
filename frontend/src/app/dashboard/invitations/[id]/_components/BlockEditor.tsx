@@ -19,15 +19,10 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { useState } from "react";
 import { Button } from "@/components/Button/Button";
+import type { Block, BlockType } from "@/lib/types";
 import styles from "./BlockEditor.module.css";
 
-export type BlockType = "text" | "image" | "button" | "rsvp";
-
-export interface Block {
-  id: string;
-  type: BlockType;
-  content: string;
-}
+export type { BlockType, Block } from "@/lib/types";
 
 interface SortableBlockProps {
   block: Block;

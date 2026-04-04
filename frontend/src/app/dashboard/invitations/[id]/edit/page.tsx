@@ -1,55 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { use, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/Button/Button";
 import { Card } from "@/components/Card/Card";
 import { Container } from "@/components/Container/Container";
 import { Input } from "@/components/Input/Input";
-import { BlockEditor, type Block } from "../_components/BlockEditor";
+import { useGetInvitation } from "@/services/get-invitation";
+import { useSaveInvitation } from "@/services/save-invitation";
+import { useGetBlocks } from "@/services/get-blocks";
+import { useSaveBlocks } from "@/services/save-blocks";
+import { BlockEditor } from "../_components/BlockEditor";
 import { BlockPreview } from "../_components/BlockPreview";
+import type { Block } from "@/lib/types";
 import styles from "./page.module.css";
-
-// TODO: replace with GET /invitations/:id + GET /invitations/:id/blocks
-const MOCK_DATA: Record<
-  string,
-  {
-    title: string;
-    slug: string;
-    eventDate: string;
-    eventLocation: string;
-    blocks: Block[];
-  }
-> = {
-  "1": {
-    title: "Ana & Lucas Wedding",
-    slug: "ana-and-lucas-wedding",
-    eventDate: "2026-06-15T16:00",
-    eventLocation: "Grand Ballroom, São Paulo",
-    blocks: [
-      { id: "b1", type: "text", content: "Welcome to our wedding! We are so happy to celebrate with you." },
-      { id: "b2", type: "button", content: "Confirm Attendance" },
-      { id: "b3", type: "image", content: "" },
-    ],
-  },
-  "2": {
-    title: "João's 30th Birthday",
-    slug: "joaos-30th-birthday",
-    eventDate: "2026-04-20T19:00",
-    eventLocation: "Rooftop Bar, Rio de Janeiro",
-    blocks: [
-      { id: "b1", type: "text", content: "Join us for João's 30th birthday party!" },
-      { id: "b2", type: "button", content: "RSVP Now" },
-    ],
-  },
-  "3": {
-    title: "Tech Meetup Q2 2026",
-    slug: "tech-meetup-q2-2026",
-    eventDate: "2026-05-08T18:30",
-    eventLocation: "Innovation Hub, Brasília",
-    blocks: [],
-  },
-};
 
 interface EditForm {
   title: string;
@@ -64,31 +28,58 @@ export default function InvitationEditPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const initial = MOCK_DATA[id];
+
+  const { data: invitation, isLoading, isError } = useGetInvitation(id);
+  const { data: fetchedBlocks } = useGetBlocks(id);
+  const saveInvitation = useSaveInvitation(id);
+  const saveBlocks = useSaveBlocks(id);
 
   const [blocksTab, setBlocksTab] = useState<"edit" | "preview">("edit");
-  const [form, setForm] = useState<EditForm>(
-    initial
-      ? {
-          title: initial.title,
-          slug: initial.slug,
-          eventDate: initial.eventDate,
-          eventLocation: initial.eventLocation,
-        }
-      : { title: "", slug: "", eventDate: "", eventLocation: "" }
-  );
-  const [blocks, setBlocks] = useState<Block[]>(initial?.blocks ?? []);
+  const [form, setForm] = useState<EditForm>({
+    title: "",
+    slug: "",
+    eventDate: "",
+    eventLocation: "",
+  });
+  const [blocks, setBlocks] = useState<Block[]>([]);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (invitation && fetchedBlocks !== undefined && !initialized.current) {
+      initialized.current = true;
+      setForm({
+        title: invitation.title,
+        slug: invitation.slug,
+        eventDate: invitation.eventDate,
+        eventLocation: invitation.eventLocation,
+      });
+      setBlocks(fetchedBlocks);
+    }
+  }, [invitation, fetchedBlocks]);
 
   function handleFieldChange(field: keyof EditForm, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
   }
 
-  function handleSave() {
-    // TODO: call PUT /invitations/:id and PUT /invitations/:id/blocks/reorder
-    console.log("Save", { form, blocks });
+  async function handleSave() {
+    try {
+      await Promise.all([
+        saveInvitation.mutateAsync(form),
+        saveBlocks.mutateAsync(blocks),
+      ]);
+    } catch {
+      // error rendered via saveError below
+    }
   }
 
-  if (!initial) {
+  const isSaving = saveInvitation.isPending || saveBlocks.isPending;
+  const saveError = saveInvitation.error?.message ?? saveBlocks.error?.message;
+
+  if (isLoading) {
+    return <Container><p>Loading…</p></Container>;
+  }
+
+  if (isError || !invitation) {
     return (
       <Container>
         <p>Invitation not found.</p>
@@ -106,10 +97,12 @@ export default function InvitationEditPage({
           <Link href={`/dashboard/invitations/${id}`}>← Back</Link>
         </Button>
         <h1 className={styles.pageTitle}>{form.title || "Edit Invitation"}</h1>
-        <Button size="sm" onClick={handleSave}>
-          Save changes
+        <Button size="sm" onClick={handleSave} disabled={isSaving}>
+          {isSaving ? "Saving…" : "Save changes"}
         </Button>
       </div>
+
+      {saveError && <p className={styles.saveError}>{saveError}</p>}
 
       <div className={styles.sections}>
         <Card className={styles.section}>

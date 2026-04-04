@@ -2,49 +2,11 @@
 
 import { use, useState } from "react";
 import { RsvpButton } from "@/app/dashboard/invitations/[id]/_components/RsvpButton";
-import type { Block } from "@/app/dashboard/invitations/[id]/_components/BlockEditor";
+import { useGetPublicInvitation } from "@/services/get-public-invitation";
+import { useAccessInvitation } from "@/services/access-invitation";
+import { useSubmitRsvp } from "@/services/submit-rsvp";
+import type { Block } from "@/lib/types";
 import styles from "./page.module.css";
-
-// TODO: replace with GET /e/:slug (public endpoint — no auth required)
-const MOCK_INVITATIONS: Record<
-  string,
-  {
-    title: string;
-    eventDate: string;
-    eventLocation: string;
-    blocks: Block[];
-    guestEmails: string[];
-  }
-> = {
-  "ana-and-lucas-wedding": {
-    title: "Ana & Lucas Wedding",
-    eventDate: "2026-06-15T16:00",
-    eventLocation: "Grand Ballroom, São Paulo",
-    blocks: [
-      { id: "b1", type: "text", content: "Welcome to our wedding! We are so happy to celebrate with you." },
-      { id: "b2", type: "rsvp", content: "Confirm Attendance" },
-      { id: "b3", type: "image", content: "" },
-    ],
-    guestEmails: ["john@example.com", "maria@example.com", "carlos@example.com"],
-  },
-  "joaos-30th-birthday": {
-    title: "João's 30th Birthday",
-    eventDate: "2026-04-20T19:00",
-    eventLocation: "Rooftop Bar, Rio de Janeiro",
-    blocks: [
-      { id: "b1", type: "text", content: "Join us for João's 30th birthday party!" },
-      { id: "b2", type: "rsvp", content: "RSVP Now" },
-    ],
-    guestEmails: ["ana@example.com"],
-  },
-  "tech-meetup-q2-2026": {
-    title: "Tech Meetup Q2 2026",
-    eventDate: "2026-05-08T18:30",
-    eventLocation: "Innovation Hub, Brasília",
-    blocks: [],
-    guestEmails: [],
-  },
-};
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", {
@@ -57,7 +19,7 @@ function formatDate(iso: string): string {
   });
 }
 
-type PageState = "gate" | "viewing" | "confirmed" | "declined";
+type ViewState = "gate" | "viewing" | "confirmed" | "declined";
 
 export default function PublicInvitationPage({
   params,
@@ -65,13 +27,24 @@ export default function PublicInvitationPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
-  const invitation = MOCK_INVITATIONS[slug];
 
-  const [state, setState] = useState<PageState>("gate");
+  const { data: invitation, isLoading, isError } = useGetPublicInvitation(slug);
+  const accessInvitation = useAccessInvitation(slug);
+  const submitRsvp = useSubmitRsvp(slug);
+
+  const [viewState, setViewState] = useState<ViewState>("gate");
   const [email, setEmail] = useState("");
-  const [gateError, setGateError] = useState("");
+  const [blocks, setBlocks] = useState<Block[]>([]);
 
-  if (!invitation) {
+  if (isLoading) {
+    return (
+      <div className={styles.page}>
+        <p>Loading…</p>
+      </div>
+    );
+  }
+
+  if (isError || !invitation) {
     return (
       <div className={styles.page}>
         <div className={styles.notFound}>
@@ -84,21 +57,27 @@ export default function PublicInvitationPage({
     );
   }
 
-  function handleGateSubmit(e: React.FormEvent) {
+  async function handleGateSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setGateError("");
-    // TODO: replace with POST /e/:slug/access — validates email server-side
-    const found = invitation.guestEmails.some(
-      (g) => g.toLowerCase() === email.trim().toLowerCase()
-    );
-    if (!found) {
-      setGateError("This email is not on the guest list.");
-      return;
+    try {
+      const result = await accessInvitation.mutateAsync(email);
+      setBlocks(result.blocks);
+      setViewState("viewing");
+    } catch {
+      // error shown via accessInvitation.error
     }
-    setState("viewing");
   }
 
-  if (state === "gate") {
+  async function handleRsvp(status: "confirmed" | "declined") {
+    try {
+      await submitRsvp.mutateAsync({ email, status });
+      setViewState(status);
+    } catch {
+      // error rendered via submitRsvp.error below
+    }
+  }
+
+  if (viewState === "gate") {
     return (
       <div className={styles.page}>
         <div className={styles.gate}>
@@ -114,9 +93,15 @@ export default function PublicInvitationPage({
               required
               autoComplete="email"
             />
-            {gateError && <p className={styles.gateError}>{gateError}</p>}
-            <button type="submit" className={styles.gateButton}>
-              Access invitation
+            {accessInvitation.error && (
+              <p className={styles.gateError}>{accessInvitation.error.message}</p>
+            )}
+            <button
+              type="submit"
+              className={styles.gateButton}
+              disabled={accessInvitation.isPending}
+            >
+              {accessInvitation.isPending ? "Checking…" : "Access invitation"}
             </button>
           </form>
         </div>
@@ -124,11 +109,11 @@ export default function PublicInvitationPage({
     );
   }
 
-  if (state === "confirmed" || state === "declined") {
+  if (viewState === "confirmed" || viewState === "declined") {
     return (
       <div className={styles.page}>
         <div className={styles.responded}>
-          {state === "confirmed" ? (
+          {viewState === "confirmed" ? (
             <>
               <span className={styles.respondedIcon} aria-hidden>✓</span>
               <h1 className={styles.respondedTitle}>See you there!</h1>
@@ -139,7 +124,7 @@ export default function PublicInvitationPage({
           ) : (
             <>
               <span className={styles.respondedIcon} aria-hidden>✕</span>
-              <h1 className={styles.respondedTitle}>We'll miss you.</h1>
+              <h1 className={styles.respondedTitle}>We&apos;ll miss you.</h1>
               <p className={styles.respondedText}>
                 Your decline for <strong>{invitation.title}</strong> has been recorded.
               </p>
@@ -160,7 +145,7 @@ export default function PublicInvitationPage({
         </header>
 
         <div className={styles.blocks}>
-          {invitation.blocks.map((block) => {
+          {blocks.map((block) => {
             if (block.type === "text") {
               return (
                 <p key={block.id} className={styles.textBlock}>
@@ -194,14 +179,19 @@ export default function PublicInvitationPage({
                 <div key={block.id} className={styles.rsvpWrapper}>
                   <RsvpButton
                     label={block.content || "Confirm Attendance"}
-                    onClick={() => setState("confirmed")}
+                    onClick={() => handleRsvp("confirmed")}
+                    disabled={submitRsvp.isPending}
                   />
                   <button
                     className={styles.declineButton}
-                    onClick={() => setState("declined")}
+                    onClick={() => handleRsvp("declined")}
+                    disabled={submitRsvp.isPending}
                   >
                     Can&apos;t make it
                   </button>
+                  {submitRsvp.error && (
+                    <p className={styles.rsvpError}>{submitRsvp.error.message}</p>
+                  )}
                 </div>
               );
             }

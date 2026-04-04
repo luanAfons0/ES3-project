@@ -204,3 +204,9 @@
 .declineButton:hover {
   color: var(--color-fg);
 }
+
+.rsvpError {
+  font-size: 0.875rem;
+  color: var(--color-danger, #dc2626);
+  text-align: center;
+}
