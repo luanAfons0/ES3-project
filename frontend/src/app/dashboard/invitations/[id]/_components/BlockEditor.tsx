@@ -21,7 +21,7 @@ import { useState } from "react";
 import { Button } from "@/components/Button/Button";
 import styles from "./BlockEditor.module.css";
 
-export type BlockType = "text" | "image" | "button";
+export type BlockType = "text" | "image" | "button" | "rsvp";
 
 export interface Block {
   id: string;
@@ -60,6 +60,14 @@ function SortableBlock({ block, onChange, onRemove }: SortableBlockProps) {
             placeholder="Enter text…"
             rows={3}
           />
+        ) : block.type === "rsvp" ? (
+          <input
+            className={styles.input}
+            type="text"
+            value={block.content}
+            onChange={(e) => onChange(block.id, e.target.value)}
+            placeholder="Confirm Attendance"
+          />
         ) : (
           <input
             className={styles.input}
@@ -86,7 +94,7 @@ interface BlockEditorProps {
   onChange: (blocks: Block[]) => void;
 }
 
-const BLOCK_TYPES: BlockType[] = ["text", "image", "button"];
+const BLOCK_TYPES: BlockType[] = ["text", "image", "button", "rsvp"];
 
 export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
   const [addingType, setAddingType] = useState(false);
