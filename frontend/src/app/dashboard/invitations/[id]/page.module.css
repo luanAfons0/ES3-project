@@ -31,15 +31,39 @@
   font-weight: 600;
 }
 
-.fields {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
+.meta {
+  font-size: 0.9375rem;
+  color: var(--color-muted);
 }
 
-.slugPreview {
-  margin-top: 0.375rem;
-  font-size: 0.8125rem;
+.stats {
+  display: flex;
+  gap: 2rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.statLabel {
+  font-size: 0.75rem;
   color: var(--color-muted);
-  font-family: monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.confirmed {
+  color: var(--color-success, #16a34a);
+}
+
+.declined {
+  color: var(--color-danger, #dc2626);
 }

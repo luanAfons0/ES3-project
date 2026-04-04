@@ -5,33 +5,31 @@ import { use, useState } from "react";
 import { Button } from "@/components/Button/Button";
 import { Card } from "@/components/Card/Card";
 import { Container } from "@/components/Container/Container";
-import { Input } from "@/components/Input/Input";
-import { BlockEditor, type Block } from "./_components/BlockEditor";
 import { GuestList, type Guest } from "./_components/GuestList";
 import styles from "./page.module.css";
 
-// TODO: replace with GET /invitations/:id + GET /invitations/:id/blocks + GET /invitations/:id/guests
+// TODO: replace with GET /invitations/:id + GET /invitations/:id/guests
 const MOCK_DATA: Record<
   string,
   {
     title: string;
-    slug: string;
     eventDate: string;
     eventLocation: string;
-    blocks: Block[];
+    totalGuests: number;
+    confirmed: number;
+    declined: number;
+    pending: number;
     guests: Guest[];
   }
 > = {
   "1": {
     title: "Ana & Lucas Wedding",
-    slug: "ana-and-lucas-wedding",
     eventDate: "2026-06-15T16:00",
     eventLocation: "Grand Ballroom, São Paulo",
-    blocks: [
-      { id: "b1", type: "text", content: "Welcome to our wedding! We are so happy to celebrate with you." },
-      { id: "b2", type: "button", content: "Confirm Attendance" },
-      { id: "b3", type: "image", content: "" },
-    ],
+    totalGuests: 120,
+    confirmed: 74,
+    declined: 12,
+    pending: 34,
     guests: [
       { id: "g1", name: "John Smith", email: "john@example.com", rsvp: "confirmed" },
       { id: "g2", name: "Maria Souza", email: "maria@example.com", rsvp: "declined" },
@@ -40,35 +38,38 @@ const MOCK_DATA: Record<
   },
   "2": {
     title: "João's 30th Birthday",
-    slug: "joaos-30th-birthday",
     eventDate: "2026-04-20T19:00",
     eventLocation: "Rooftop Bar, Rio de Janeiro",
-    blocks: [
-      { id: "b1", type: "text", content: "Join us for João's 30th birthday party!" },
-      { id: "b2", type: "button", content: "RSVP Now" },
-    ],
+    totalGuests: 45,
+    confirmed: 28,
+    declined: 5,
+    pending: 12,
     guests: [
       { id: "g1", name: "Ana Lima", email: "ana@example.com", rsvp: "confirmed" },
     ],
   },
   "3": {
     title: "Tech Meetup Q2 2026",
-    slug: "tech-meetup-q2-2026",
     eventDate: "2026-05-08T18:30",
     eventLocation: "Innovation Hub, Brasília",
-    blocks: [],
+    totalGuests: 80,
+    confirmed: 0,
+    declined: 0,
+    pending: 80,
     guests: [],
   },
 };
 
-interface EditForm {
-  title: string;
-  slug: string;
-  eventDate: string;
-  eventLocation: string;
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 }
 
-export default function InvitationEditPage({
+export default function InvitationOverviewPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -76,27 +77,7 @@ export default function InvitationEditPage({
   const { id } = use(params);
   const initial = MOCK_DATA[id];
 
-  const [form, setForm] = useState<EditForm>(
-    initial
-      ? {
-          title: initial.title,
-          slug: initial.slug,
-          eventDate: initial.eventDate,
-          eventLocation: initial.eventLocation,
-        }
-      : { title: "", slug: "", eventDate: "", eventLocation: "" }
-  );
-  const [blocks, setBlocks] = useState<Block[]>(initial?.blocks ?? []);
   const [guests, setGuests] = useState<Guest[]>(initial?.guests ?? []);
-
-  function handleFieldChange(field: keyof EditForm, value: string) {
-    setForm((prev) => ({ ...prev, [field]: value }));
-  }
-
-  function handleSave() {
-    // TODO: call PUT /invitations/:id, PUT /invitations/:id/blocks/reorder, etc.
-    console.log("Save", { form, blocks, guests });
-  }
 
   if (!initial) {
     return (
@@ -115,62 +96,49 @@ export default function InvitationEditPage({
         <Button variant="ghost" size="sm" asChild>
           <Link href="/dashboard">← Back</Link>
         </Button>
-        <h1 className={styles.pageTitle}>{form.title || "Edit Invitation"}</h1>
-        <Button size="sm" onClick={handleSave}>
-          Save changes
+        <h1 className={styles.pageTitle}>{initial.title}</h1>
+        <Button variant="ghost" size="sm" asChild>
+          <Link href={`/dashboard/invitations/${id}/edit`}>Edit content</Link>
         </Button>
       </div>
 
-      <div>
-        <div className={styles.sections}>
-          <Card className={styles.section}>
-            <h2 className={styles.sectionTitle}>Event details</h2>
-            <div className={styles.fields}>
-              <Input
-                id="title"
-                label="Title"
-                value={form.title}
-                onChange={(e) => handleFieldChange("title", e.target.value)}
-                required
-              />
-              <div>
-                <Input
-                  id="slug"
-                  label="Slug"
-                  value={form.slug}
-                  onChange={(e) => handleFieldChange("slug", e.target.value)}
-                  required
-                />
-                <p className={styles.slugPreview}>
-                  {`/e/${form.slug || "your-event"}`}
-                </p>
-              </div>
-              <Input
-                id="eventDate"
-                label="Event date"
-                type="datetime-local"
-                value={form.eventDate}
-                onChange={(e) => handleFieldChange("eventDate", e.target.value)}
-              />
-              <Input
-                id="eventLocation"
-                label="Location"
-                value={form.eventLocation}
-                onChange={(e) => handleFieldChange("eventLocation", e.target.value)}
-              />
+      <div className={styles.sections}>
+        <Card className={styles.section}>
+          <h2 className={styles.sectionTitle}>Event details</h2>
+          <p className={styles.meta}>{formatDate(initial.eventDate)}</p>
+          <p className={styles.meta}>{initial.eventLocation}</p>
+        </Card>
+
+        <Card className={styles.section}>
+          <h2 className={styles.sectionTitle}>RSVP summary</h2>
+          <div className={styles.stats}>
+            <div className={styles.stat}>
+              <span className={styles.statValue}>{initial.totalGuests}</span>
+              <span className={styles.statLabel}>Total</span>
             </div>
-          </Card>
+            <div className={styles.stat}>
+              <span className={`${styles.statValue} ${styles.confirmed}`}>
+                {initial.confirmed}
+              </span>
+              <span className={styles.statLabel}>Confirmed</span>
+            </div>
+            <div className={styles.stat}>
+              <span className={`${styles.statValue} ${styles.declined}`}>
+                {initial.declined}
+              </span>
+              <span className={styles.statLabel}>Declined</span>
+            </div>
+            <div className={styles.stat}>
+              <span className={styles.statValue}>{initial.pending}</span>
+              <span className={styles.statLabel}>Pending</span>
+            </div>
+          </div>
+        </Card>
 
-          <Card className={styles.section}>
-            <h2 className={styles.sectionTitle}>Content blocks</h2>
-            <BlockEditor blocks={blocks} onChange={setBlocks} />
-          </Card>
-
-          <Card className={styles.section}>
-            <h2 className={styles.sectionTitle}>Guests</h2>
-            <GuestList guests={guests} onChange={setGuests} />
-          </Card>
-        </div>
+        <Card className={styles.section}>
+          <h2 className={styles.sectionTitle}>Guests</h2>
+          <GuestList guests={guests} onChange={setGuests} />
+        </Card>
       </div>
     </Container>
   );
