@@ -1,6 +1,13 @@
 .card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.card:has(a:hover),
+.card:hover {
+  box-shadow: var(--shadow-card-hover);
 }

@@ -6,33 +6,47 @@
 
 .label {
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-fg);
+  letter-spacing: 0.01em;
 }
 
 .input {
   width: 100%;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  font-size: 0.875rem;
+  padding: 0.625rem 0.875rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  font-family: var(--font-sans);
   background: var(--color-bg);
   color: var(--color-fg);
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s ease-out, box-shadow 0.15s ease-out;
+}
+
+.input::placeholder {
+  color: var(--color-muted);
+  opacity: 0.7;
 }
 
 .input:focus {
   border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 15%, transparent);
 }
 
 .input:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  background: var(--color-surface);
 }
 
 .error {
   border-color: var(--color-danger);
+}
+
+.error:focus {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 15%, transparent);
 }
 
 .errorMessage {

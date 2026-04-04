@@ -2,16 +2,18 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 2.25rem;
 }
 
 .pageTitle {
-  font-size: 1.25rem;
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
   font-weight: 700;
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.015em;
 }
 
 .sections {
@@ -27,18 +29,22 @@
 }
 
 .sectionTitle {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-muted);
 }
 
 .meta {
   font-size: 0.9375rem;
-  color: var(--color-muted);
+  color: var(--color-fg);
+  line-height: 1.6;
 }
 
 .stats {
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .stat {
@@ -49,21 +55,24 @@
 }
 
 .statValue {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 
 .statLabel {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   color: var(--color-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
+  font-weight: 600;
 }
 
 .confirmed {
-  color: var(--color-success, #16a34a);
+  color: var(--color-success);
 }
 
 .declined {
-  color: var(--color-danger, #dc2626);
+  color: var(--color-danger);
 }
