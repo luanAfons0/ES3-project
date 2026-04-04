@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { Container } from "@/components/Container/Container";
+import { Logo } from "@/components/Logo/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle/ThemeToggle";
 import styles from "./layout.module.css";
 
@@ -9,9 +9,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
     <div className={styles.layout}>
       <header className={styles.header}>
         <Container className={styles.headerInner}>
-          <Link href="/" className={styles.logo}>
-            WellCard
-          </Link>
+          <Logo />
           <ThemeToggle />
         </Container>
       </header>

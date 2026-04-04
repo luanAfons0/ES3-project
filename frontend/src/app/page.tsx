@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/Button/Button";
 import { Card } from "@/components/Card/Card";
 import { Container } from "@/components/Container/Container";
+import { Logo } from "@/components/Logo/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle/ThemeToggle";
 import styles from "./page.module.css";
 
@@ -43,9 +44,7 @@ export default function Home() {
     <div className={styles.page}>
       <header className={styles.header}>
         <Container className={styles.headerInner}>
-          <Link href="/" className={styles.logo}>
-            WellCard
-          </Link>
+          <Logo />
           <nav className={styles.nav}>
             <Link href="#features" className={styles.navLink}>Features</Link>
             <Link href="#how-it-works" className={styles.navLink}>How it works</Link>

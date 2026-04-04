@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
 import { Container } from "@/components/Container/Container";
+import { Logo } from "@/components/Logo/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle/ThemeToggle";
 import { Button } from "@/components/Button/Button";
 import styles from "./layout.module.css";
@@ -26,9 +26,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     <div className={styles.layout}>
       <header className={styles.header}>
         <Container className={styles.headerInner}>
-          <Link href="/dashboard" className={styles.logo}>
-            WellCard
-          </Link>
+          <Logo href="/dashboard" />
           <div className={styles.headerActions}>
             <ThemeToggle />
             <Button variant="ghost" size="sm" onClick={handleLogout}>
