@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/Button/Button";
 import { Card } from "@/components/Card/Card";
 import { Container } from "@/components/Container/Container";
+import { apiFetch } from "@/lib/api";
 import styles from "./page.module.css";
 
 interface Invitation {
@@ -18,43 +20,6 @@ interface Invitation {
   declined: number;
   pending: number;
 }
-
-// TODO: replace with real API call via TanStack Query
-const INITIAL_INVITATIONS: Invitation[] = [
-  {
-    id: "1",
-    title: "Ana & Lucas Wedding",
-    slug: "ana-and-lucas-wedding",
-    eventDate: "2026-06-15T16:00",
-    eventLocation: "Grand Ballroom, São Paulo",
-    totalGuests: 120,
-    confirmed: 74,
-    declined: 12,
-    pending: 34,
-  },
-  {
-    id: "2",
-    title: "João's 30th Birthday",
-    slug: "joaos-30th-birthday",
-    eventDate: "2026-04-20T19:00",
-    eventLocation: "Rooftop Bar, Rio de Janeiro",
-    totalGuests: 45,
-    confirmed: 28,
-    declined: 5,
-    pending: 12,
-  },
-  {
-    id: "3",
-    title: "Tech Meetup Q2 2026",
-    slug: "tech-meetup-q2-2026",
-    eventDate: "2026-05-08T18:30",
-    eventLocation: "Innovation Hub, Brasília",
-    totalGuests: 80,
-    confirmed: 0,
-    declined: 0,
-    pending: 80,
-  },
-];
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", {
@@ -109,7 +74,7 @@ function InvitationCard({ invitation }: { invitation: Invitation }) {
 
       <div className={styles.cardActions}>
         <Button variant="ghost" size="sm" asChild>
-          <Link href={`/dashboard/invitations/${invitation.id}`}>Edit</Link>
+          <Link href={`/dashboard/invitations/${invitation.id}`}>View</Link>
         </Button>
         <Button variant="ghost" size="sm" onClick={handleCopyLink}>
           {copied ? "Copied!" : "Copy link"}
@@ -120,7 +85,10 @@ function InvitationCard({ invitation }: { invitation: Invitation }) {
 }
 
 export default function DashboardPage() {
-  const [invitations] = useState<Invitation[]>(INITIAL_INVITATIONS);
+  const { data: invitations, isLoading, isError } = useQuery<Invitation[]>({
+    queryKey: ["invitations"],
+    queryFn: () => apiFetch<Invitation[]>("/api/invitations"),
+  });
 
   return (
     <Container>
@@ -129,12 +97,18 @@ export default function DashboardPage() {
         <Button size="sm">New Invitation</Button>
       </div>
 
-      {invitations.length === 0 ? (
+      {isLoading && <p>Loading…</p>}
+
+      {isError && <p>Failed to load invitations. Please try again.</p>}
+
+      {!isLoading && !isError && invitations?.length === 0 && (
         <div className={styles.empty}>
           <p className={styles.emptyText}>No invitations yet.</p>
           <Button>Create your first invitation</Button>
         </div>
-      ) : (
+      )}
+
+      {!isLoading && !isError && invitations && invitations.length > 0 && (
         <div className={styles.grid}>
           {invitations.map((inv) => (
             <InvitationCard key={inv.id} invitation={inv} />

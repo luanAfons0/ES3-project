@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
   if (email !== MOCK_USER.email || password !== MOCK_USER.password) {
     return NextResponse.json(
       { message: "Invalid email or password." },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
