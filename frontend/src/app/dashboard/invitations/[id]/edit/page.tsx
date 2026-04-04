@@ -3,8 +3,6 @@
 import Link from "next/link";
 import { use, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/Button/Button";
-import { Card } from "@/components/Card/Card";
-import { Container } from "@/components/Container/Container";
 import { Input } from "@/components/Input/Input";
 import { useGetInvitation } from "@/services/get-invitation";
 import { useSaveInvitation } from "@/services/save-invitation";
@@ -34,7 +32,7 @@ export default function InvitationEditPage({
   const saveInvitation = useSaveInvitation(id);
   const saveBlocks = useSaveBlocks(id);
 
-  const [blocksTab, setBlocksTab] = useState<"edit" | "preview">("edit");
+  const [canvasMode, setCanvasMode] = useState<"edit" | "preview">("edit");
   const [form, setForm] = useState<EditForm>({
     title: "",
     slug: "",
@@ -76,98 +74,106 @@ export default function InvitationEditPage({
   const saveError = saveInvitation.error?.message ?? saveBlocks.error?.message;
 
   if (isLoading) {
-    return <Container><p>Loading…</p></Container>;
+    return <div className={styles.stateMessage}>Loading…</div>;
   }
 
   if (isError || !invitation) {
     return (
-      <Container>
+      <div className={styles.stateMessage}>
         <p>Invitation not found.</p>
         <Button variant="ghost" size="sm" asChild>
           <Link href="/dashboard">← Back</Link>
         </Button>
-      </Container>
+      </div>
     );
   }
 
   return (
-    <Container>
-      <div className={styles.pageHeader}>
+    <div className={styles.page}>
+      <div className={styles.toolbar}>
         <Button variant="ghost" size="sm" asChild>
           <Link href={`/dashboard/invitations/${id}`}>← Back</Link>
         </Button>
         <h1 className={styles.pageTitle}>{form.title || "Edit Invitation"}</h1>
+        {saveError && <span className={styles.saveError}>{saveError}</span>}
         <Button size="sm" onClick={handleSave} disabled={isSaving}>
           {isSaving ? "Saving…" : "Save changes"}
         </Button>
       </div>
 
-      {saveError && <p className={styles.saveError}>{saveError}</p>}
-
-      <div className={styles.sections}>
-        <Card className={styles.section}>
-          <h2 className={styles.sectionTitle}>Event details</h2>
-          <div className={styles.fields}>
-            <Input
-              id="title"
-              label="Title"
-              value={form.title}
-              onChange={(e) => handleFieldChange("title", e.target.value)}
-              required
-            />
-            <div>
+      <div className={styles.body}>
+        <aside className={styles.panel}>
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>Event details</h2>
+            <div className={styles.fields}>
               <Input
-                id="slug"
-                label="Slug"
-                value={form.slug}
-                onChange={(e) => handleFieldChange("slug", e.target.value)}
+                id="title"
+                label="Title"
+                value={form.title}
+                onChange={(e) => handleFieldChange("title", e.target.value)}
                 required
               />
-              <p className={styles.slugPreview}>
-                {`/e/${form.slug || "your-event"}`}
-              </p>
+              <div>
+                <Input
+                  id="slug"
+                  label="Slug"
+                  value={form.slug}
+                  onChange={(e) => handleFieldChange("slug", e.target.value)}
+                  required
+                />
+                <p className={styles.slugPreview}>
+                  {`/e/${form.slug || "your-event"}`}
+                </p>
+              </div>
+              <Input
+                id="eventDate"
+                label="Event date"
+                type="datetime-local"
+                value={form.eventDate}
+                onChange={(e) => handleFieldChange("eventDate", e.target.value)}
+              />
+              <Input
+                id="eventLocation"
+                label="Location"
+                value={form.eventLocation}
+                onChange={(e) =>
+                  handleFieldChange("eventLocation", e.target.value)
+                }
+              />
             </div>
-            <Input
-              id="eventDate"
-              label="Event date"
-              type="datetime-local"
-              value={form.eventDate}
-              onChange={(e) => handleFieldChange("eventDate", e.target.value)}
-            />
-            <Input
-              id="eventLocation"
-              label="Location"
-              value={form.eventLocation}
-              onChange={(e) => handleFieldChange("eventLocation", e.target.value)}
-            />
-          </div>
-        </Card>
+          </section>
+        </aside>
 
-        <Card className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Content blocks</h2>
-            <div className={styles.tabs}>
-              <button
-                className={blocksTab === "edit" ? styles.tabActive : styles.tab}
-                onClick={() => setBlocksTab("edit")}
-              >
-                Edit
-              </button>
-              <button
-                className={blocksTab === "preview" ? styles.tabActive : styles.tab}
-                onClick={() => setBlocksTab("preview")}
-              >
-                Preview
-              </button>
+        <div className={styles.canvas}>
+          <div className={styles.canvasDoc}>
+            <div className={styles.canvasHeader}>
+              <span className={styles.canvasLabel}>Content blocks</span>
+              <div className={styles.modeTabs}>
+                <button
+                  className={canvasMode === "edit" ? styles.modeTabActive : styles.modeTab}
+                  onClick={() => setCanvasMode("edit")}
+                >
+                  Edit
+                </button>
+                <button
+                  className={canvasMode === "preview" ? styles.modeTabActive : styles.modeTab}
+                  onClick={() => setCanvasMode("preview")}
+                >
+                  Preview
+                </button>
+              </div>
+            </div>
+
+            <div className={styles.canvasBody}>
+              {canvasMode === "edit" ? (
+                <BlockEditor blocks={blocks} onChange={setBlocks} />
+              ) : (
+                <BlockPreview blocks={blocks} />
+              )}
             </div>
           </div>
-          {blocksTab === "edit" ? (
-            <BlockEditor blocks={blocks} onChange={setBlocks} />
-          ) : (
-            <BlockPreview blocks={blocks} />
-          )}
-        </Card>
+        </div>
       </div>
-    </Container>
+    </div>
   );
 }
