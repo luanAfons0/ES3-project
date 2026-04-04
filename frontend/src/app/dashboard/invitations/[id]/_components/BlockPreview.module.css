@@ -1,21 +1,15 @@
 .preview {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 1.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  background: var(--color-surface);
-  min-height: 120px;
+  gap: 1.25rem;
 }
 
 .empty {
   font-size: 0.875rem;
   color: var(--color-muted);
   text-align: center;
-  padding-block: 1.5rem;
-  border: 1px dashed var(--color-border);
-  border-radius: var(--radius);
+  padding-block: 3rem;
+  line-height: 1.6;
 }
 
 .placeholder {
