@@ -74,15 +74,15 @@ export default function InvitationEditPage({
   const saveError = saveInvitation.error?.message ?? saveBlocks.error?.message;
 
   if (isLoading) {
-    return <div className={styles.stateMessage}>Loading…</div>;
+    return <div className={styles.stateMessage}>Carregando…</div>;
   }
 
   if (isError || !invitation) {
     return (
       <div className={styles.stateMessage}>
-        <p>Invitation not found.</p>
+        <p>Convite não encontrado.</p>
         <Button variant="ghost" size="sm" asChild>
-          <Link href="/dashboard">← Back</Link>
+          <Link href="/dashboard">← Voltar</Link>
         </Button>
       </div>
     );
@@ -92,23 +92,23 @@ export default function InvitationEditPage({
     <div className={styles.page}>
       <div className={styles.toolbar}>
         <Button variant="ghost" size="sm" asChild>
-          <Link href={`/dashboard/invitations/${id}`}>← Back</Link>
+          <Link href={`/dashboard/invitations/${id}`}>← Voltar</Link>
         </Button>
-        <h1 className={styles.pageTitle}>{form.title || "Edit Invitation"}</h1>
+        <h1 className={styles.pageTitle}>{form.title || "Editar convite"}</h1>
         {saveError && <span className={styles.saveError}>{saveError}</span>}
         <Button size="sm" onClick={handleSave} disabled={isSaving}>
-          {isSaving ? "Saving…" : "Save changes"}
+          {isSaving ? "Salvando…" : "Salvar alterações"}
         </Button>
       </div>
 
       <div className={styles.body}>
         <aside className={styles.panel}>
           <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>Event details</h2>
+            <h2 className={styles.sectionTitle}>Detalhes do evento</h2>
             <div className={styles.fields}>
               <Input
                 id="title"
-                label="Title"
+                label="Título"
                 value={form.title}
                 onChange={(e) => handleFieldChange("title", e.target.value)}
                 required
@@ -122,19 +122,19 @@ export default function InvitationEditPage({
                   required
                 />
                 <p className={styles.slugPreview}>
-                  {`/e/${form.slug || "your-event"}`}
+                  {`/e/${form.slug || "seu-evento"}`}
                 </p>
               </div>
               <Input
                 id="eventDate"
-                label="Event date"
+                label="Data do evento"
                 type="datetime-local"
                 value={form.eventDate}
                 onChange={(e) => handleFieldChange("eventDate", e.target.value)}
               />
               <Input
                 id="eventLocation"
-                label="Location"
+                label="Local"
                 value={form.eventLocation}
                 onChange={(e) =>
                   handleFieldChange("eventLocation", e.target.value)
@@ -147,19 +147,19 @@ export default function InvitationEditPage({
         <div className={styles.canvas}>
           <div className={styles.canvasDoc}>
             <div className={styles.canvasHeader}>
-              <span className={styles.canvasLabel}>Content blocks</span>
+              <span className={styles.canvasLabel}>Blocos de conteúdo</span>
               <div className={styles.modeTabs}>
                 <button
                   className={canvasMode === "edit" ? styles.modeTabActive : styles.modeTab}
                   onClick={() => setCanvasMode("edit")}
                 >
-                  Edit
+                  Editar
                 </button>
                 <button
                   className={canvasMode === "preview" ? styles.modeTabActive : styles.modeTab}
                   onClick={() => setCanvasMode("preview")}
                 >
-                  Preview
+                  Pré-visualizar
                 </button>
               </div>
             </div>

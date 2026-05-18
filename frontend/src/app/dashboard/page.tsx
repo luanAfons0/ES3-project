@@ -10,7 +10,7 @@ import type { Invitation } from "@/lib/types";
 import styles from "./page.module.css";
 
 function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-US", {
+  return new Date(iso).toLocaleDateString("pt-BR", {
     weekday: "short",
     month: "short",
     day: "numeric",
@@ -40,32 +40,32 @@ function InvitationCard({ invitation }: { invitation: Invitation }) {
       <div className={styles.stats}>
         <div className={styles.stat}>
           <span className={styles.statValue}>{invitation.totalGuests}</span>
-          <span className={styles.statLabel}>Guests</span>
+          <span className={styles.statLabel}>Convidados</span>
         </div>
         <div className={styles.stat}>
           <span className={`${styles.statValue} ${styles.confirmed}`}>
             {invitation.confirmed}
           </span>
-          <span className={styles.statLabel}>Confirmed</span>
+          <span className={styles.statLabel}>Confirmados</span>
         </div>
         <div className={styles.stat}>
           <span className={`${styles.statValue} ${styles.declined}`}>
             {invitation.declined}
           </span>
-          <span className={styles.statLabel}>Declined</span>
+          <span className={styles.statLabel}>Recusados</span>
         </div>
         <div className={styles.stat}>
           <span className={styles.statValue}>{invitation.pending}</span>
-          <span className={styles.statLabel}>Pending</span>
+          <span className={styles.statLabel}>Pendentes</span>
         </div>
       </div>
 
       <div className={styles.cardActions}>
         <Button variant="ghost" size="sm" asChild>
-          <Link href={`/dashboard/invitations/${invitation.id}`}>View</Link>
+          <Link href={`/dashboard/invitations/${invitation.id}`}>Ver</Link>
         </Button>
         <Button variant="ghost" size="sm" onClick={handleCopyLink}>
-          {copied ? "Copied!" : "Copy link"}
+          {copied ? "Copiado!" : "Copiar link"}
         </Button>
       </div>
     </Card>
@@ -78,18 +78,18 @@ export default function DashboardPage() {
   return (
     <Container>
       <div className={styles.pageHeader}>
-        <h1 className={styles.pageTitle}>My Invitations</h1>
-        <Button size="sm">New Invitation</Button>
+        <h1 className={styles.pageTitle}>Meus convites</h1>
+        <Button size="sm">Novo convite</Button>
       </div>
 
-      {isLoading && <p>Loading…</p>}
+      {isLoading && <p>Carregando…</p>}
 
-      {isError && <p>Failed to load invitations. Please try again.</p>}
+      {isError && <p>Falha ao carregar os convites. Tente novamente.</p>}
 
       {!isLoading && !isError && invitations?.length === 0 && (
         <div className={styles.empty}>
-          <p className={styles.emptyText}>No invitations yet.</p>
-          <Button>Create your first invitation</Button>
+          <p className={styles.emptyText}>Você ainda não tem convites.</p>
+          <Button>Criar seu primeiro convite</Button>
         </div>
       )}
 

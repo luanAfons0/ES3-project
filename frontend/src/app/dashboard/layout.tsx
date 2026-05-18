@@ -30,7 +30,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <div className={styles.headerActions}>
             <ThemeToggle />
             <Button variant="ghost" size="sm" onClick={handleLogout}>
-              Sign out
+              Sair
             </Button>
           </div>
         </Container>
