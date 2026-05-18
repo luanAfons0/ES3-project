@@ -9,7 +9,7 @@ import type { Block } from "@/lib/types";
 import styles from "./page.module.css";
 
 function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-US", {
+  return new Date(iso).toLocaleDateString("pt-BR", {
     weekday: "long",
     month: "long",
     day: "numeric",
@@ -39,7 +39,7 @@ export default function PublicInvitationPage({
   if (isLoading) {
     return (
       <div className={styles.page}>
-        <p>Loading…</p>
+        <p>Carregando…</p>
       </div>
     );
   }
@@ -48,9 +48,9 @@ export default function PublicInvitationPage({
     return (
       <div className={styles.page}>
         <div className={styles.notFound}>
-          <h1 className={styles.notFoundTitle}>Invitation not found</h1>
+          <h1 className={styles.notFoundTitle}>Convite não encontrado</h1>
           <p className={styles.notFoundText}>
-            This link may be invalid or the invitation may no longer be available.
+            Este link pode estar inválido ou o convite pode não estar mais disponível.
           </p>
         </div>
       </div>
@@ -82,12 +82,12 @@ export default function PublicInvitationPage({
       <div className={styles.page}>
         <div className={styles.gate}>
           <h1 className={styles.gateTitle}>{invitation.title}</h1>
-          <p className={styles.gateSubtitle}>Enter your email to access this invitation.</p>
+          <p className={styles.gateSubtitle}>Informe seu e-mail para acessar este convite.</p>
           <form onSubmit={handleGateSubmit} className={styles.gateForm}>
             <input
               className={styles.gateInput}
               type="email"
-              placeholder="your@email.com"
+              placeholder="seu@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -101,7 +101,7 @@ export default function PublicInvitationPage({
               className={styles.gateButton}
               disabled={accessInvitation.isPending}
             >
-              {accessInvitation.isPending ? "Checking…" : "Access invitation"}
+              {accessInvitation.isPending ? "Verificando…" : "Acessar convite"}
             </button>
           </form>
         </div>
@@ -116,17 +116,17 @@ export default function PublicInvitationPage({
           {viewState === "confirmed" ? (
             <>
               <span className={styles.respondedIcon} aria-hidden>✓</span>
-              <h1 className={styles.respondedTitle}>See you there!</h1>
+              <h1 className={styles.respondedTitle}>Até lá!</h1>
               <p className={styles.respondedText}>
-                Your attendance for <strong>{invitation.title}</strong> has been confirmed.
+                Sua presença em <strong>{invitation.title}</strong> foi confirmada.
               </p>
             </>
           ) : (
             <>
               <span className={styles.respondedIcon} aria-hidden>✕</span>
-              <h1 className={styles.respondedTitle}>We&apos;ll miss you.</h1>
+              <h1 className={styles.respondedTitle}>Vamos sentir sua falta.</h1>
               <p className={styles.respondedText}>
-                Your decline for <strong>{invitation.title}</strong> has been recorded.
+                Sua recusa em <strong>{invitation.title}</strong> foi registrada.
               </p>
             </>
           )}
@@ -178,7 +178,7 @@ export default function PublicInvitationPage({
               return (
                 <div key={block.id} className={styles.rsvpWrapper}>
                   <RsvpButton
-                    label={block.content || "Confirm Attendance"}
+                    label={block.content || "Confirmar presença"}
                     onClick={() => handleRsvp("confirmed")}
                     disabled={submitRsvp.isPending}
                   />
@@ -187,7 +187,7 @@ export default function PublicInvitationPage({
                     onClick={() => handleRsvp("declined")}
                     disabled={submitRsvp.isPending}
                   >
-                    Can&apos;t make it
+                    Não vou poder ir
                   </button>
                   {submitRsvp.error && (
                     <p className={styles.rsvpError}>{submitRsvp.error.message}</p>
