@@ -22,7 +22,7 @@ function Dialog({ open, onOpenChange, title, children, footer }: DialogProps) {
             <RadixDialog.Title className={styles.title}>
               {title}
             </RadixDialog.Title>
-            <RadixDialog.Close className={styles.close} aria-label="Close">
+            <RadixDialog.Close className={styles.close} aria-label="Fechar">
               ✕
             </RadixDialog.Close>
           </div>

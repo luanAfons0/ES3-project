@@ -12,14 +12,14 @@ function ThemeToggle() {
     setMounted(true);
   }, []);
 
-  if (!mounted) return <Switch id="theme-toggle" checked={false} onCheckedChange={() => {}} label="Theme" disabled />;
+  if (!mounted) return <Switch id="theme-toggle" checked={false} onCheckedChange={() => {}} label="Tema" disabled />;
 
   return (
     <Switch
       id="theme-toggle"
       checked={theme === "dark"}
       onCheckedChange={toggle}
-      label={theme === "dark" ? "Dark mode" : "Light mode"}
+      label={theme === "dark" ? "Modo escuro" : "Modo claro"}
     />
   );
 }
