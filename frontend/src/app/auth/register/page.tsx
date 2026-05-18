@@ -31,7 +31,7 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message ?? "Something went wrong. Please try again.");
+        setError(data.message ?? "Algo deu errado. Tente novamente.");
         return;
       }
 
@@ -39,7 +39,7 @@ export default function RegisterPage() {
       localStorage.setItem("token", data.token);
       router.push("/dashboard");
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError("Algo deu errado. Tente novamente.");
     } finally {
       setIsLoading(false);
     }
@@ -48,8 +48,8 @@ export default function RegisterPage() {
   return (
     <Card className={styles.card}>
       <div className={styles.cardHeader}>
-        <h1 className={styles.title}>Create an account</h1>
-        <p className={styles.subtitle}>Start creating digital invitations</p>
+        <h1 className={styles.title}>Criar uma conta</h1>
+        <p className={styles.subtitle}>Comece a criar convites digitais</p>
       </div>
 
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -58,8 +58,8 @@ export default function RegisterPage() {
         <Input
           id="name"
           type="text"
-          label="Name"
-          placeholder="Your name"
+          label="Nome"
+          placeholder="Seu nome"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
@@ -69,8 +69,8 @@ export default function RegisterPage() {
         <Input
           id="email"
           type="email"
-          label="Email"
-          placeholder="you@example.com"
+          label="E-mail"
+          placeholder="voce@exemplo.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -80,7 +80,7 @@ export default function RegisterPage() {
         <Input
           id="password"
           type="password"
-          label="Password"
+          label="Senha"
           placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -90,14 +90,14 @@ export default function RegisterPage() {
         />
 
         <Button type="submit" className={styles.submitButton} disabled={isLoading}>
-          {isLoading ? "Creating account…" : "Create account"}
+          {isLoading ? "Criando conta…" : "Criar conta"}
         </Button>
       </form>
 
       <p className={styles.switchAuth}>
-        Already have an account?{" "}
+        Já tem uma conta?{" "}
         <Link href="/auth/login" className={styles.switchLink}>
-          Sign in
+          Entrar
         </Link>
       </p>
     </Card>

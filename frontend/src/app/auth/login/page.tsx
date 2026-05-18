@@ -30,7 +30,7 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message ?? "Invalid email or password. Please try again.");
+        setError(data.message ?? "E-mail ou senha inválidos. Tente novamente.");
         return;
       }
 
@@ -38,7 +38,7 @@ export default function LoginPage() {
       localStorage.setItem("token", data.token);
       router.push("/dashboard");
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError("Algo deu errado. Tente novamente.");
     } finally {
       setIsLoading(false);
     }
@@ -47,8 +47,8 @@ export default function LoginPage() {
   return (
     <Card className={styles.card}>
       <div className={styles.cardHeader}>
-        <h1 className={styles.title}>Welcome back</h1>
-        <p className={styles.subtitle}>Sign in to your account</p>
+        <h1 className={styles.title}>Bem-vindo de volta</h1>
+        <p className={styles.subtitle}>Entre na sua conta</p>
       </div>
 
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -57,8 +57,8 @@ export default function LoginPage() {
         <Input
           id="email"
           type="email"
-          label="Email"
-          placeholder="you@example.com"
+          label="E-mail"
+          placeholder="voce@exemplo.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -68,7 +68,7 @@ export default function LoginPage() {
         <Input
           id="password"
           type="password"
-          label="Password"
+          label="Senha"
           placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -77,14 +77,14 @@ export default function LoginPage() {
         />
 
         <Button type="submit" className={styles.submitButton} disabled={isLoading}>
-          {isLoading ? "Signing in…" : "Sign in"}
+          {isLoading ? "Entrando…" : "Entrar"}
         </Button>
       </form>
 
       <p className={styles.switchAuth}>
-        Don&apos;t have an account?{" "}
+        Ainda não tem uma conta?{" "}
         <Link href="/auth/register" className={styles.switchLink}>
-          Create one
+          Crie uma
         </Link>
       </p>
     </Card>
