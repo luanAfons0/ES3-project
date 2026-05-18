@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
 
   if (TAKEN_EMAILS.includes(email)) {
     return NextResponse.json(
-      { message: "This email is already registered." },
+      { message: "Este e-mail já está cadastrado." },
       { status: 409 }
     );
   }

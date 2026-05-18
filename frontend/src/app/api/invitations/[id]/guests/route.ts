@@ -20,7 +20,7 @@ export async function POST(
 
   if (list.some((g) => g.email.toLowerCase() === body.email.toLowerCase())) {
     return NextResponse.json(
-      { message: "This email is already on the guest list." },
+      { message: "Este e-mail já está na lista de convidados." },
       { status: 409 }
     );
   }

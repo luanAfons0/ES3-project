@@ -5,10 +5,10 @@ import type { Block, Guest, Invitation, PublicInvitation } from "@/lib/types";
 export const mockInvitations: Invitation[] = [
   {
     id: "1",
-    title: "Ana & Lucas Wedding",
-    slug: "ana-and-lucas-wedding",
+    title: "Casamento Ana & Lucas",
+    slug: "casamento-ana-e-lucas",
     eventDate: "2026-06-15T16:00",
-    eventLocation: "Grand Ballroom, São Paulo",
+    eventLocation: "Salão de Festas, São Paulo",
     totalGuests: 120,
     confirmed: 74,
     declined: 12,
@@ -16,10 +16,10 @@ export const mockInvitations: Invitation[] = [
   },
   {
     id: "2",
-    title: "João's 30th Birthday",
-    slug: "joaos-30th-birthday",
+    title: "Aniversário de 30 anos do João",
+    slug: "aniversario-30-anos-joao",
     eventDate: "2026-04-20T19:00",
-    eventLocation: "Rooftop Bar, Rio de Janeiro",
+    eventLocation: "Bar Rooftop, Rio de Janeiro",
     totalGuests: 45,
     confirmed: 28,
     declined: 5,
@@ -27,10 +27,10 @@ export const mockInvitations: Invitation[] = [
   },
   {
     id: "3",
-    title: "Tech Meetup Q2 2026",
-    slug: "tech-meetup-q2-2026",
+    title: "Tech Meetup 2º trimestre 2026",
+    slug: "tech-meetup-2-trimestre-2026",
     eventDate: "2026-05-08T18:30",
-    eventLocation: "Innovation Hub, Brasília",
+    eventLocation: "Hub de Inovação, Brasília",
     totalGuests: 80,
     confirmed: 0,
     declined: 0,
@@ -40,48 +40,48 @@ export const mockInvitations: Invitation[] = [
 
 export const mockBlocks: Record<string, Block[]> = {
   "1": [
-    { id: "b1", type: "text", content: "Welcome to our wedding! We are so happy to celebrate with you." },
-    { id: "b2", type: "rsvp", content: "Confirm Attendance" },
+    { id: "b1", type: "text", content: "Sejam bem-vindos ao nosso casamento! Estamos muito felizes em celebrar com vocês." },
+    { id: "b2", type: "rsvp", content: "Confirmar presença" },
     { id: "b3", type: "image", content: "" },
   ],
   "2": [
-    { id: "b1", type: "text", content: "Join us for João's 30th birthday party!" },
-    { id: "b2", type: "rsvp", content: "RSVP Now" },
+    { id: "b1", type: "text", content: "Venha comemorar os 30 anos do João!" },
+    { id: "b2", type: "rsvp", content: "Confirmar agora" },
   ],
   "3": [],
 };
 
 export const mockGuests: Record<string, Guest[]> = {
   "1": [
-    { id: "g1", name: "John Smith", email: "john@example.com", rsvp: "confirmed" },
-    { id: "g2", name: "Maria Souza", email: "maria@example.com", rsvp: "declined" },
-    { id: "g3", name: "Carlos Lima", email: "carlos@example.com", rsvp: "pending" },
+    { id: "g1", name: "João Silva", email: "joao@exemplo.com", rsvp: "confirmed" },
+    { id: "g2", name: "Maria Souza", email: "maria@exemplo.com", rsvp: "declined" },
+    { id: "g3", name: "Carlos Lima", email: "carlos@exemplo.com", rsvp: "pending" },
   ],
   "2": [
-    { id: "g1", name: "Ana Lima", email: "ana@example.com", rsvp: "confirmed" },
+    { id: "g1", name: "Ana Lima", email: "ana@exemplo.com", rsvp: "confirmed" },
   ],
   "3": [],
 };
 
 export const mockPublicInvitations: Record<string, PublicInvitation> = {
-  "ana-and-lucas-wedding": {
-    title: "Ana & Lucas Wedding",
+  "casamento-ana-e-lucas": {
+    title: "Casamento Ana & Lucas",
     eventDate: "2026-06-15T16:00",
-    eventLocation: "Grand Ballroom, São Paulo",
+    eventLocation: "Salão de Festas, São Paulo",
     blocks: mockBlocks["1"],
     guestEmails: mockGuests["1"].map((g) => g.email),
   },
-  "joaos-30th-birthday": {
-    title: "João's 30th Birthday",
+  "aniversario-30-anos-joao": {
+    title: "Aniversário de 30 anos do João",
     eventDate: "2026-04-20T19:00",
-    eventLocation: "Rooftop Bar, Rio de Janeiro",
+    eventLocation: "Bar Rooftop, Rio de Janeiro",
     blocks: mockBlocks["2"],
     guestEmails: mockGuests["2"].map((g) => g.email),
   },
-  "tech-meetup-q2-2026": {
-    title: "Tech Meetup Q2 2026",
+  "tech-meetup-2-trimestre-2026": {
+    title: "Tech Meetup 2º trimestre 2026",
     eventDate: "2026-05-08T18:30",
-    eventLocation: "Innovation Hub, Brasília",
+    eventLocation: "Hub de Inovação, Brasília",
     blocks: mockBlocks["3"],
     guestEmails: [],
   },

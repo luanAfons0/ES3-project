@@ -9,7 +9,7 @@ export async function POST(
   const { slug } = await params;
   const invitation = mockPublicInvitations[slug];
   if (!invitation) {
-    return NextResponse.json({ message: "Invitation not found." }, { status: 404 });
+    return NextResponse.json({ message: "Convite não encontrado." }, { status: 404 });
   }
 
   const { email, status }: { email: string; status: RsvpStatus } = await req.json();
@@ -17,7 +17,7 @@ export async function POST(
     (e) => e.toLowerCase() === email.trim().toLowerCase()
   );
   if (!found) {
-    return NextResponse.json({ message: "Guest not found." }, { status: 404 });
+    return NextResponse.json({ message: "Convidado não encontrado." }, { status: 404 });
   }
 
   // TODO: persist RSVP status in DB
