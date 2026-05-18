@@ -8,34 +8,34 @@ import styles from "./page.module.css";
 
 const features = [
   {
-    title: "Create Invitations",
+    title: "Crie convites",
     description:
-      "Build beautiful digital invitations for any event — weddings, birthdays, corporate events, and more.",
+      "Monte convites digitais bonitos para qualquer evento — casamentos, aniversários, eventos corporativos e muito mais.",
   },
   {
-    title: "Customizable Blocks",
+    title: "Blocos personalizáveis",
     description:
-      "Design your invitation using content blocks: text, images, and buttons, arranged exactly how you want.",
+      "Monte seu convite usando blocos de conteúdo: texto, imagens e botões, organizados exatamente como você quiser.",
   },
   {
-    title: "Guest Management",
+    title: "Gerenciamento de convidados",
     description:
-      "Add guests by name and email. Only people on your list can access the invitation.",
+      "Adicione convidados por nome e e-mail. Apenas pessoas da sua lista podem acessar o convite.",
   },
   {
-    title: "Email Gate",
+    title: "Acesso por e-mail",
     description:
-      "Guests enter their email to access the invitation. No account needed on their end.",
+      "Os convidados informam o e-mail para acessar o convite. Eles não precisam criar conta.",
   },
   {
-    title: "RSVP Tracking",
+    title: "Acompanhamento de RSVP",
     description:
-      "Guests confirm or decline attendance directly from the invitation page.",
+      "Os convidados confirmam ou recusam presença direto na página do convite.",
   },
   {
-    title: "Live Dashboard",
+    title: "Painel em tempo real",
     description:
-      "Monitor responses in real time — see who confirmed, declined, or hasn't replied yet.",
+      "Monitore as respostas em tempo real — veja quem confirmou, recusou ou ainda não respondeu.",
   },
 ];
 
@@ -46,16 +46,16 @@ export default function Home() {
         <Container className={styles.headerInner}>
           <Logo />
           <nav className={styles.nav}>
-            <Link href="#features" className={styles.navLink}>Features</Link>
-            <Link href="#how-it-works" className={styles.navLink}>How it works</Link>
+            <Link href="#features" className={styles.navLink}>Recursos</Link>
+            <Link href="#how-it-works" className={styles.navLink}>Como funciona</Link>
           </nav>
           <div className={styles.headerActions}>
             <ThemeToggle />
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/auth/login">Sign In</Link>
+              <Link href="/auth/login">Entrar</Link>
             </Button>
             <Button size="sm" asChild>
-              <Link href="/auth/register">Get Started</Link>
+              <Link href="/auth/register">Começar</Link>
             </Button>
           </div>
         </Container>
@@ -65,21 +65,21 @@ export default function Home() {
         <section className={styles.hero}>
           <Container className={styles.heroContent}>
             <h1 className={styles.heroTitle}>
-              Digital Invitations,
+              Convites digitais,
               <br />
-              Done Right
+              do jeito certo
             </h1>
             <p className={styles.heroSubtitle}>
-              Create customizable invitation pages for your events. Control who
-              sees them, track RSVPs, and share with a single link — no email
-              sending required.
+              Crie páginas de convite personalizadas para seus eventos. Controle
+              quem visualiza, acompanhe os RSVPs e compartilhe com um único
+              link — sem precisar enviar e-mails.
             </p>
             <div className={styles.heroCta}>
               <Button size="lg" asChild>
-                <Link href="/auth/register">Get Started</Link>
+                <Link href="/auth/register">Começar</Link>
               </Button>
               <Button size="lg" variant="ghost" asChild>
-                <Link href="/auth/login">Sign In</Link>
+                <Link href="/auth/login">Entrar</Link>
               </Button>
             </div>
           </Container>
@@ -87,10 +87,10 @@ export default function Home() {
 
         <section id="features" className={styles.features}>
           <Container>
-            <h2 className={styles.sectionTitle}>Everything you need</h2>
+            <h2 className={styles.sectionTitle}>Tudo o que você precisa</h2>
             <p className={styles.sectionSubtitle}>
-              From creation to attendance confirmation, manage your entire event
-              invitation flow in one place.
+              Da criação à confirmação de presença, gerencie todo o fluxo de
+              convites do seu evento em um só lugar.
             </p>
             <div className={styles.featureGrid}>
               {features.map((feature) => (
@@ -107,44 +107,45 @@ export default function Home() {
 
         <section id="how-it-works" className={styles.howItWorks}>
           <Container>
-            <h2 className={styles.sectionTitle}>How it works</h2>
+            <h2 className={styles.sectionTitle}>Como funciona</h2>
             <ol className={styles.steps}>
               <li className={styles.step}>
                 <span className={styles.stepNumber}>1</span>
                 <div>
-                  <h3 className={styles.stepTitle}>Create your invitation</h3>
+                  <h3 className={styles.stepTitle}>Crie seu convite</h3>
                   <p className={styles.stepDescription}>
-                    Fill in the event details and design the page using content
-                    blocks.
+                    Preencha os detalhes do evento e desenhe a página usando
+                    blocos de conteúdo.
                   </p>
                 </div>
               </li>
               <li className={styles.step}>
                 <span className={styles.stepNumber}>2</span>
                 <div>
-                  <h3 className={styles.stepTitle}>Add your guests</h3>
+                  <h3 className={styles.stepTitle}>Adicione seus convidados</h3>
                   <p className={styles.stepDescription}>
-                    Enter the name and email of each guest you want to invite.
+                    Informe o nome e o e-mail de cada convidado que você quer
+                    convidar.
                   </p>
                 </div>
               </li>
               <li className={styles.step}>
                 <span className={styles.stepNumber}>3</span>
                 <div>
-                  <h3 className={styles.stepTitle}>Share the link</h3>
+                  <h3 className={styles.stepTitle}>Compartilhe o link</h3>
                   <p className={styles.stepDescription}>
-                    Copy your unique invitation link and send it however you
-                    like — WhatsApp, email, or any other way.
+                    Copie o link único do seu convite e envie como preferir —
+                    WhatsApp, e-mail ou de qualquer outra forma.
                   </p>
                 </div>
               </li>
               <li className={styles.step}>
                 <span className={styles.stepNumber}>4</span>
                 <div>
-                  <h3 className={styles.stepTitle}>Track responses</h3>
+                  <h3 className={styles.stepTitle}>Acompanhe as respostas</h3>
                   <p className={styles.stepDescription}>
-                    Watch RSVPs come in from your dashboard and see who&apos;s
-                    attending.
+                    Veja os RSVPs chegando no seu painel e descubra quem vai
+                    comparecer.
                   </p>
                 </div>
               </li>
@@ -156,7 +157,7 @@ export default function Home() {
       <footer className={styles.footer}>
         <Container>
           <p className={styles.footerText}>
-            WellCard &mdash; Create and manage digital invitations
+            WellCard &mdash; Crie e gerencie convites digitais
           </p>
         </Container>
       </footer>
