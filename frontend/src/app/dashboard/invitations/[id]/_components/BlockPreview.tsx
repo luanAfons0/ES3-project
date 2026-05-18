@@ -10,7 +10,7 @@ interface BlockPreviewProps {
 
 export function BlockPreview({ blocks }: BlockPreviewProps) {
   if (blocks.length === 0) {
-    return <p className={styles.empty}>No blocks yet. Switch to Edit to add some.</p>;
+    return <p className={styles.empty}>Nenhum bloco ainda. Vá para Editar para adicionar.</p>;
   }
 
   return (
@@ -19,7 +19,7 @@ export function BlockPreview({ blocks }: BlockPreviewProps) {
         if (block.type === "text") {
           return (
             <p key={block.id} className={styles.textBlock}>
-              {block.content || <span className={styles.placeholder}>Empty text block</span>}
+              {block.content || <span className={styles.placeholder}>Bloco de texto vazio</span>}
             </p>
           );
         }
@@ -35,7 +35,7 @@ export function BlockPreview({ blocks }: BlockPreviewProps) {
             />
           ) : (
             <div key={block.id} className={styles.imagePlaceholder}>
-              No image URL provided
+              Nenhuma URL de imagem informada
             </div>
           );
         }
@@ -44,7 +44,7 @@ export function BlockPreview({ blocks }: BlockPreviewProps) {
           return (
             <div key={block.id} className={styles.buttonWrapper}>
               <button className={styles.buttonBlock} disabled>
-                {block.content || <span className={styles.placeholder}>Unlabeled button</span>}
+                {block.content || <span className={styles.placeholder}>Botão sem texto</span>}
               </button>
             </div>
           );
@@ -54,7 +54,7 @@ export function BlockPreview({ blocks }: BlockPreviewProps) {
           return (
             <RsvpButton
               key={block.id}
-              label={block.content || "Confirm Attendance"}
+              label={block.content || "Confirmar presença"}
               disabled
             />
           );

@@ -42,17 +42,17 @@ function SortableBlock({ block, onChange, onRemove }: SortableBlockProps) {
 
   return (
     <div ref={setNodeRef} style={style} className={styles.block}>
-      <button className={styles.dragHandle} {...attributes} {...listeners} aria-label="Drag to reorder">
+      <button className={styles.dragHandle} {...attributes} {...listeners} aria-label="Arrastar para reordenar">
         ⠿
       </button>
-      <span className={styles.typeBadge}>{block.type}</span>
+      <span className={styles.typeBadge}>{BLOCK_TYPE_LABEL[block.type]}</span>
       <div className={styles.blockContent}>
         {block.type === "text" ? (
           <textarea
             className={styles.textarea}
             value={block.content}
             onChange={(e) => onChange(block.id, e.target.value)}
-            placeholder="Enter text…"
+            placeholder="Digite o texto…"
             rows={3}
           />
         ) : block.type === "rsvp" ? (
@@ -61,7 +61,7 @@ function SortableBlock({ block, onChange, onRemove }: SortableBlockProps) {
             type="text"
             value={block.content}
             onChange={(e) => onChange(block.id, e.target.value)}
-            placeholder="Confirm Attendance"
+            placeholder="Confirmar presença"
           />
         ) : (
           <input
@@ -69,14 +69,14 @@ function SortableBlock({ block, onChange, onRemove }: SortableBlockProps) {
             type={block.type === "image" ? "url" : "text"}
             value={block.content}
             onChange={(e) => onChange(block.id, e.target.value)}
-            placeholder={block.type === "image" ? "Image URL…" : "Button label…"}
+            placeholder={block.type === "image" ? "URL da imagem…" : "Texto do botão…"}
           />
         )}
       </div>
       <button
         className={styles.removeButton}
         onClick={() => onRemove(block.id)}
-        aria-label="Remove block"
+        aria-label="Remover bloco"
       >
         ✕
       </button>
@@ -90,6 +90,13 @@ interface BlockEditorProps {
 }
 
 const BLOCK_TYPES: BlockType[] = ["text", "image", "button", "rsvp"];
+
+const BLOCK_TYPE_LABEL: Record<BlockType, string> = {
+  text: "texto",
+  image: "imagem",
+  button: "botão",
+  rsvp: "rsvp",
+};
 
 export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
   const [addingType, setAddingType] = useState(false);
@@ -127,7 +134,7 @@ export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={blocks.map((b) => b.id)} strategy={verticalListSortingStrategy}>
           {blocks.length === 0 && (
-            <p className={styles.empty}>No blocks yet. Add one below.</p>
+            <p className={styles.empty}>Nenhum bloco ainda. Adicione um abaixo.</p>
           )}
           {blocks.map((block) => (
             <SortableBlock
@@ -142,19 +149,19 @@ export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
 
       {addingType ? (
         <div className={styles.typePicker}>
-          <span className={styles.typePickerLabel}>Choose type:</span>
+          <span className={styles.typePickerLabel}>Escolha o tipo:</span>
           {BLOCK_TYPES.map((type) => (
             <Button key={type} variant="ghost" size="sm" onClick={() => handleAdd(type)}>
-              {type}
+              {BLOCK_TYPE_LABEL[type]}
             </Button>
           ))}
           <Button variant="ghost" size="sm" onClick={() => setAddingType(false)}>
-            Cancel
+            Cancelar
           </Button>
         </div>
       ) : (
         <Button variant="ghost" size="sm" onClick={() => setAddingType(true)}>
-          + Add block
+          + Adicionar bloco
         </Button>
       )}
     </div>

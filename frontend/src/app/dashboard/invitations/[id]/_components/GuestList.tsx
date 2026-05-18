@@ -17,9 +17,9 @@ interface GuestListProps {
 }
 
 const STATUS_LABEL: Record<RsvpStatus, string> = {
-  pending: "Pending",
-  confirmed: "Confirmed",
-  declined: "Declined",
+  pending: "Pendente",
+  confirmed: "Confirmado",
+  declined: "Recusado",
 };
 
 export function GuestList({ guests, onAdd, onRemove, isAdding, addError }: GuestListProps) {
@@ -36,13 +36,13 @@ export function GuestList({ guests, onAdd, onRemove, isAdding, addError }: Guest
   return (
     <div className={styles.guestList}>
       {guests.length === 0 ? (
-        <p className={styles.empty}>No guests yet.</p>
+        <p className={styles.empty}>Nenhum convidado ainda.</p>
       ) : (
         <table className={styles.table}>
           <thead>
             <tr>
-              <th className={styles.th}>Name</th>
-              <th className={styles.th}>Email</th>
+              <th className={styles.th}>Nome</th>
+              <th className={styles.th}>E-mail</th>
               <th className={styles.th}>RSVP</th>
               <th className={styles.th} />
             </tr>
@@ -61,7 +61,7 @@ export function GuestList({ guests, onAdd, onRemove, isAdding, addError }: Guest
                   <button
                     className={styles.removeButton}
                     onClick={() => onRemove(guest.id)}
-                    aria-label={`Remove ${guest.name}`}
+                    aria-label={`Remover ${guest.name}`}
                   >
                     ✕
                   </button>
@@ -75,7 +75,7 @@ export function GuestList({ guests, onAdd, onRemove, isAdding, addError }: Guest
       <form onSubmit={handleAdd} className={styles.addForm}>
         <Input
           id="guest-name"
-          placeholder="Name"
+          placeholder="Nome"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
@@ -83,13 +83,13 @@ export function GuestList({ guests, onAdd, onRemove, isAdding, addError }: Guest
         <Input
           id="guest-email"
           type="email"
-          placeholder="Email"
+          placeholder="E-mail"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
         <Button type="submit" size="sm" disabled={isAdding}>
-          {isAdding ? "Adding…" : "Add guest"}
+          {isAdding ? "Adicionando…" : "Adicionar convidado"}
         </Button>
       </form>
       {addError && <p className={styles.formError}>{addError}</p>}
