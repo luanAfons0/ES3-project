@@ -19,7 +19,7 @@ const lora = Lora({
 
 export const metadata: Metadata = {
   title: "WellCard",
-  description: "Create and manage digital invitations",
+  description: "Crie e gerencie convites digitais",
 };
 
 const themeScript = `
@@ -32,7 +32,7 @@ const themeScript = `
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${jakarta.variable} ${lora.variable}`}>
+    <html lang="pt-BR" suppressHydrationWarning className={`${jakarta.variable} ${lora.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
