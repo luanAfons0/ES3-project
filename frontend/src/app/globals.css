@@ -90,6 +90,16 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 100, "opsz" 144;
+}
+
 h1 {
   font-family: var(--font-serif);
   line-height: 1.2;
