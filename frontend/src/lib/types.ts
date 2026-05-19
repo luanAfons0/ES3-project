@@ -4,6 +4,7 @@ export interface Block {
   id: string;
   type: BlockType;
   content: string;
+  link?: string;
 }
 
 export type RsvpStatus = "pending" | "confirmed" | "declined";

@@ -17,6 +17,7 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { GripVertical, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/Button/Button";
 import type { Block, BlockType } from "@/lib/types";
@@ -26,7 +27,7 @@ export type { BlockType, Block } from "@/lib/types";
 
 interface SortableBlockProps {
   block: Block;
-  onChange: (id: string, content: string) => void;
+  onChange: (id: string, patch: Partial<Pick<Block, "content" | "link">>) => void;
   onRemove: (id: string) => void;
 }
 
@@ -42,8 +43,14 @@ function SortableBlock({ block, onChange, onRemove }: SortableBlockProps) {
 
   return (
     <div ref={setNodeRef} style={style} className={styles.block}>
-      <button className={styles.dragHandle} {...attributes} {...listeners} aria-label="Arrastar para reordenar">
-        ⠿
+      <button
+        className={styles.dragHandle}
+        {...attributes}
+        {...listeners}
+        aria-label="Arrastar para reordenar"
+        type="button"
+      >
+        <GripVertical size={18} aria-hidden />
       </button>
       <span className={styles.typeBadge}>{BLOCK_TYPE_LABEL[block.type]}</span>
       <div className={styles.blockContent}>
@@ -51,7 +58,7 @@ function SortableBlock({ block, onChange, onRemove }: SortableBlockProps) {
           <textarea
             className={styles.textarea}
             value={block.content}
-            onChange={(e) => onChange(block.id, e.target.value)}
+            onChange={(e) => onChange(block.id, { content: e.target.value })}
             placeholder="Digite o texto…"
             rows={3}
           />
@@ -60,16 +67,33 @@ function SortableBlock({ block, onChange, onRemove }: SortableBlockProps) {
             className={styles.input}
             type="text"
             value={block.content}
-            onChange={(e) => onChange(block.id, e.target.value)}
+            onChange={(e) => onChange(block.id, { content: e.target.value })}
             placeholder="Confirmar presença"
           />
+        ) : block.type === "button" ? (
+          <div className={styles.buttonFields}>
+            <input
+              className={styles.input}
+              type="text"
+              value={block.content}
+              onChange={(e) => onChange(block.id, { content: e.target.value })}
+              placeholder="Texto do botão"
+            />
+            <input
+              className={styles.input}
+              type="url"
+              value={block.link ?? ""}
+              onChange={(e) => onChange(block.id, { link: e.target.value })}
+              placeholder="https://… (link de destino)"
+            />
+          </div>
         ) : (
           <input
             className={styles.input}
-            type={block.type === "image" ? "url" : "text"}
+            type="url"
             value={block.content}
-            onChange={(e) => onChange(block.id, e.target.value)}
-            placeholder={block.type === "image" ? "URL da imagem…" : "Texto do botão…"}
+            onChange={(e) => onChange(block.id, { content: e.target.value })}
+            placeholder="URL da imagem…"
           />
         )}
       </div>
@@ -77,8 +101,9 @@ function SortableBlock({ block, onChange, onRemove }: SortableBlockProps) {
         className={styles.removeButton}
         onClick={() => onRemove(block.id)}
         aria-label="Remover bloco"
+        type="button"
       >
-        ✕
+        <Trash2 size={16} aria-hidden />
       </button>
     </div>
   );
@@ -115,8 +140,8 @@ export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
     }
   }
 
-  function handleContentChange(id: string, content: string) {
-    onChange(blocks.map((b) => (b.id === id ? { ...b, content } : b)));
+  function handleBlockPatch(id: string, patch: Partial<Pick<Block, "content" | "link">>) {
+    onChange(blocks.map((b) => (b.id === id ? { ...b, ...patch } : b)));
   }
 
   function handleRemove(id: string) {
@@ -140,7 +165,7 @@ export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
             <SortableBlock
               key={block.id}
               block={block}
-              onChange={handleContentChange}
+              onChange={handleBlockPatch}
               onRemove={handleRemove}
             />
           ))}
@@ -161,7 +186,7 @@ export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
         </div>
       ) : (
         <Button variant="ghost" size="sm" onClick={() => setAddingType(true)}>
-          + Adicionar bloco
+          <Plus size={14} aria-hidden /> Adicionar bloco
         </Button>
       )}
     </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { SmartImage } from "@/components/SmartImage/SmartImage";
 import type { Block } from "./BlockEditor";
 import { RsvpButton } from "./RsvpButton";
 import styles from "./BlockPreview.module.css";
@@ -26,8 +27,7 @@ export function BlockPreview({ blocks }: BlockPreviewProps) {
 
         if (block.type === "image") {
           return block.content ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <SmartImage
               key={block.id}
               src={block.content}
               alt=""
@@ -41,11 +41,23 @@ export function BlockPreview({ blocks }: BlockPreviewProps) {
         }
 
         if (block.type === "button") {
+          const label = block.content || "Botão sem texto";
           return (
             <div key={block.id} className={styles.buttonWrapper}>
-              <button className={styles.buttonBlock} disabled>
-                {block.content || <span className={styles.placeholder}>Botão sem texto</span>}
-              </button>
+              {block.link ? (
+                <a
+                  className={styles.buttonBlock}
+                  href={block.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {label}
+                </a>
+              ) : (
+                <button className={styles.buttonBlock} disabled>
+                  {block.content ? label : <span className={styles.placeholder}>{label}</span>}
+                </button>
+              )}
             </div>
           );
         }
