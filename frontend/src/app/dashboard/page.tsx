@@ -79,7 +79,9 @@ export default function DashboardPage() {
     <Container>
       <div className={styles.pageHeader}>
         <h1 className={styles.pageTitle}>Meus convites</h1>
-        <Button size="sm">Novo convite</Button>
+        <Button size="sm" asChild>
+          <Link href="/dashboard/invitations/new">Novo convite</Link>
+        </Button>
       </div>
 
       {isLoading && <p>Carregando…</p>}
@@ -89,7 +91,11 @@ export default function DashboardPage() {
       {!isLoading && !isError && invitations?.length === 0 && (
         <div className={styles.empty}>
           <p className={styles.emptyText}>Você ainda não tem convites.</p>
-          <Button>Criar seu primeiro convite</Button>
+          <Button asChild>
+            <Link href="/dashboard/invitations/new">
+              Criar seu primeiro convite
+            </Link>
+          </Button>
         </div>
       )}
 
