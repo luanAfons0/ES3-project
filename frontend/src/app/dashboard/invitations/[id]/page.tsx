@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowLeft, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use, useState } from "react";
@@ -7,6 +8,9 @@ import { Button } from "@/components/Button/Button";
 import { Card } from "@/components/Card/Card";
 import { Container } from "@/components/Container/Container";
 import { Dialog } from "@/components/Dialog/Dialog";
+import { Skeleton } from "@/components/Skeleton/Skeleton";
+import { SmartImage } from "@/components/SmartImage/SmartImage";
+import { useToast } from "@/components/Toast";
 import { useGetInvitation } from "@/services/get-invitation";
 import { useGetGuests } from "@/services/get-guests";
 import { useAddGuest } from "@/services/add-guest";
@@ -24,6 +28,32 @@ function formatDate(iso: string): string {
   });
 }
 
+function OverviewSkeleton() {
+  return (
+    <Container>
+      <div className={styles.pageHeader}>
+        <Skeleton height={28} width={84} radius={8} />
+        <Skeleton height={32} width="40%" />
+      </div>
+      <div className={styles.sections}>
+        <Card className={styles.section}>
+          <Skeleton height={20} width="40%" />
+          <Skeleton height={14} width="60%" />
+          <Skeleton height={14} width="50%" />
+        </Card>
+        <Card className={styles.section}>
+          <Skeleton height={20} width="40%" />
+          <Skeleton height={48} />
+        </Card>
+        <Card className={styles.section}>
+          <Skeleton height={20} width="40%" />
+          <Skeleton height={64} />
+        </Card>
+      </div>
+    </Container>
+  );
+}
+
 export default function InvitationOverviewPage({
   params,
 }: {
@@ -31,6 +61,7 @@ export default function InvitationOverviewPage({
 }) {
   const { id } = use(params);
   const router = useRouter();
+  const toast = useToast();
 
   const { data: invitation, isLoading, isError } = useGetInvitation(id);
   const { data: guests = [] } = useGetGuests(id);
@@ -43,6 +74,7 @@ export default function InvitationOverviewPage({
   async function handleConfirmDelete() {
     try {
       await deleteInvitation.mutateAsync(id);
+      toast("Convite excluído.", "success");
       router.push("/dashboard");
     } catch {
       // erro renderizado via deleteInvitation.error
@@ -50,7 +82,7 @@ export default function InvitationOverviewPage({
   }
 
   if (isLoading) {
-    return <Container><p>Carregando…</p></Container>;
+    return <OverviewSkeleton />;
   }
 
   if (isError || !invitation) {
@@ -58,7 +90,9 @@ export default function InvitationOverviewPage({
       <Container>
         <p>Convite não encontrado.</p>
         <Button variant="ghost" size="sm" asChild>
-          <Link href="/dashboard">← Voltar</Link>
+          <Link href="/dashboard">
+            <ArrowLeft size={14} aria-hidden /> Voltar
+          </Link>
         </Button>
       </Container>
     );
@@ -68,7 +102,9 @@ export default function InvitationOverviewPage({
     <Container>
       <div className={styles.pageHeader}>
         <Button variant="ghost" size="sm" asChild>
-          <Link href="/dashboard">← Voltar</Link>
+          <Link href="/dashboard">
+            <ArrowLeft size={14} aria-hidden /> Voltar
+          </Link>
         </Button>
         <h1 className={styles.pageTitle}>{invitation.title}</h1>
         <Button variant="ghost" size="sm" asChild>
@@ -79,7 +115,7 @@ export default function InvitationOverviewPage({
           size="sm"
           onClick={() => setConfirmingDelete(true)}
         >
-          Excluir
+          <Trash2 size={14} aria-hidden /> Excluir
         </Button>
       </div>
 
@@ -87,8 +123,7 @@ export default function InvitationOverviewPage({
         <Card className={styles.section}>
           <h2 className={styles.sectionTitle}>Detalhes do evento</h2>
           {invitation.coverImage && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <SmartImage
               src={invitation.coverImage}
               alt=""
               className={styles.cover}

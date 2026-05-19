@@ -1,9 +1,13 @@
 "use client";
 
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { use, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/Button/Button";
 import { Input } from "@/components/Input/Input";
+import { Skeleton } from "@/components/Skeleton/Skeleton";
+import { SmartImage } from "@/components/SmartImage/SmartImage";
+import { useToast } from "@/components/Toast";
 import { useGetInvitation } from "@/services/get-invitation";
 import { useSaveInvitation } from "@/services/save-invitation";
 import { useGetBlocks } from "@/services/get-blocks";
@@ -29,6 +33,7 @@ export default function InvitationEditPage({
 }) {
   const { id } = use(params);
 
+  const toast = useToast();
   const { data: invitation, isLoading, isError } = useGetInvitation(id);
   const { data: fetchedBlocks } = useGetBlocks(id);
   const saveInvitation = useSaveInvitation(id);
@@ -71,6 +76,7 @@ export default function InvitationEditPage({
         saveInvitation.mutateAsync(form),
         saveBlocks.mutateAsync(blocks),
       ]);
+      toast("Alterações salvas.", "success");
     } catch {
       // error rendered via saveError below
     }
@@ -80,7 +86,31 @@ export default function InvitationEditPage({
   const saveError = saveInvitation.error?.message ?? saveBlocks.error?.message;
 
   if (isLoading) {
-    return <div className={styles.stateMessage}>Carregando…</div>;
+    return (
+      <div className={styles.page}>
+        <div className={styles.toolbar}>
+          <Skeleton height={28} width={84} radius={8} />
+          <Skeleton height={28} width={220} />
+          <Skeleton height={32} width={140} radius={8} />
+        </div>
+        <div className={styles.body}>
+          <aside className={styles.panel}>
+            <section className={styles.section}>
+              <Skeleton height={20} width="55%" />
+              <div className={styles.fields}>
+                <Skeleton height={42} />
+                <Skeleton height={42} />
+                <Skeleton height={42} />
+                <Skeleton height={96} />
+              </div>
+            </section>
+          </aside>
+          <div className={styles.canvas}>
+            <Skeleton height={420} />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (isError || !invitation) {
@@ -88,7 +118,9 @@ export default function InvitationEditPage({
       <div className={styles.stateMessage}>
         <p>Convite não encontrado.</p>
         <Button variant="ghost" size="sm" asChild>
-          <Link href="/dashboard">← Voltar</Link>
+          <Link href="/dashboard">
+            <ArrowLeft size={14} aria-hidden /> Voltar
+          </Link>
         </Button>
       </div>
     );
@@ -98,7 +130,9 @@ export default function InvitationEditPage({
     <div className={styles.page}>
       <div className={styles.toolbar}>
         <Button variant="ghost" size="sm" asChild>
-          <Link href={`/dashboard/invitations/${id}`}>← Voltar</Link>
+          <Link href={`/dashboard/invitations/${id}`}>
+            <ArrowLeft size={14} aria-hidden /> Voltar
+          </Link>
         </Button>
         <h1 className={styles.pageTitle}>{form.title || "Editar convite"}</h1>
         {saveError && <span className={styles.saveError}>{saveError}</span>}
@@ -173,8 +207,7 @@ export default function InvitationEditPage({
                   }
                 />
                 {form.coverImage && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <SmartImage
                     src={form.coverImage}
                     alt=""
                     className={styles.coverPreview}

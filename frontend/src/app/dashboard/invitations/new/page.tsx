@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -7,6 +8,7 @@ import { Button } from "@/components/Button/Button";
 import { Card } from "@/components/Card/Card";
 import { Container } from "@/components/Container/Container";
 import { Input } from "@/components/Input/Input";
+import { useToast } from "@/components/Toast";
 import { useCreateInvitation } from "@/services/create-invitation";
 import styles from "./page.module.css";
 
@@ -28,6 +30,7 @@ interface NewInvitationForm {
 
 export default function NewInvitationPage() {
   const router = useRouter();
+  const toast = useToast();
   const createInvitation = useCreateInvitation();
 
   const [form, setForm] = useState<NewInvitationForm>({
@@ -55,6 +58,7 @@ export default function NewInvitationPage() {
     e.preventDefault();
     try {
       const created = await createInvitation.mutateAsync(form);
+      toast("Convite criado.", "success");
       router.push(`/dashboard/invitations/${created.id}/edit`);
     } catch {
       // erro renderizado via createInvitation.error
@@ -131,7 +135,9 @@ export default function NewInvitationPage() {
 
             <div className={styles.actions}>
               <Button variant="ghost" size="sm" asChild>
-                <Link href="/dashboard">Cancelar</Link>
+                <Link href="/dashboard">
+                  <ArrowLeft size={14} aria-hidden /> Cancelar
+                </Link>
               </Button>
               <Button
                 type="submit"
