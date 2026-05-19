@@ -123,9 +123,12 @@
   gap: 0.875rem;
 }
 
-.respondedIcon {
-  font-size: 2.75rem;
-  line-height: 1;
+.respondedIconConfirmed {
+  color: var(--color-success);
+}
+
+.respondedIconDeclined {
+  color: var(--color-muted);
 }
 
 .respondedTitle {
@@ -213,6 +216,7 @@
 }
 
 .genericButton {
+  display: inline-block;
   padding: 0.75rem 1.75rem;
   background: var(--color-primary);
   color: #fff;
@@ -222,14 +226,20 @@
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
+  text-decoration: none;
   box-shadow: var(--shadow-sm);
   transition: background 0.15s, transform 0.15s;
   letter-spacing: 0.01em;
 }
 
-.genericButton:hover {
+.genericButton:hover:not(:disabled) {
   background: var(--color-primary-hover);
   transform: translateY(-1px);
+}
+
+.genericButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .rsvpWrapper {
@@ -240,19 +250,27 @@
 }
 
 .declineButton {
-  background: none;
-  border: none;
-  font-size: 0.875rem;
+  padding: 0.625rem 1.5rem;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
   font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 500;
   color: var(--color-muted);
   cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: color 0.15s;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
 
-.declineButton:hover {
+.declineButton:hover:not(:disabled) {
   color: var(--color-fg);
+  border-color: var(--color-fg);
+  background: var(--color-surface);
+}
+
+.declineButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .rsvpError {
