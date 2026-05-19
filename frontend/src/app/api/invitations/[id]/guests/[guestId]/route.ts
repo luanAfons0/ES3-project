@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest} from "next/server";
+import { NextResponse } from "next/server";
 import { mockGuests } from "@/app/api/_mock/store";
 
 export async function DELETE(
