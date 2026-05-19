@@ -76,3 +76,20 @@
 .declined {
   color: var(--color-danger);
 }
+
+.dialogText {
+  font-size: 0.9375rem;
+  color: var(--color-fg);
+  line-height: 1.6;
+}
+
+.dialogText strong {
+  font-weight: 700;
+}
+
+.dialogError {
+  font-size: 0.875rem;
+  color: var(--color-danger);
+  margin-top: 0.5rem;
+  line-height: 1.5;
+}

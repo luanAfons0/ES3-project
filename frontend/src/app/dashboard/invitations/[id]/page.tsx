@@ -1,14 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { use } from "react";
+import { useRouter } from "next/navigation";
+import { use, useState } from "react";
 import { Button } from "@/components/Button/Button";
 import { Card } from "@/components/Card/Card";
 import { Container } from "@/components/Container/Container";
+import { Dialog } from "@/components/Dialog/Dialog";
 import { useGetInvitation } from "@/services/get-invitation";
 import { useGetGuests } from "@/services/get-guests";
 import { useAddGuest } from "@/services/add-guest";
 import { useRemoveGuest } from "@/services/remove-guest";
+import { useDeleteInvitation } from "@/services/delete-invitation";
 import { GuestList } from "./_components/GuestList";
 import styles from "./page.module.css";
 
@@ -27,11 +30,24 @@ export default function InvitationOverviewPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const router = useRouter();
 
   const { data: invitation, isLoading, isError } = useGetInvitation(id);
   const { data: guests = [] } = useGetGuests(id);
   const addGuest = useAddGuest(id);
   const removeGuest = useRemoveGuest(id);
+  const deleteInvitation = useDeleteInvitation();
+
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+
+  async function handleConfirmDelete() {
+    try {
+      await deleteInvitation.mutateAsync(id);
+      router.push("/dashboard");
+    } catch {
+      // erro renderizado via deleteInvitation.error
+    }
+  }
 
   if (isLoading) {
     return <Container><p>Carregando…</p></Container>;
@@ -57,6 +73,13 @@ export default function InvitationOverviewPage({
         <h1 className={styles.pageTitle}>{invitation.title}</h1>
         <Button variant="ghost" size="sm" asChild>
           <Link href={`/dashboard/invitations/${id}/edit`}>Editar conteúdo</Link>
+        </Button>
+        <Button
+          variant="danger"
+          size="sm"
+          onClick={() => setConfirmingDelete(true)}
+        >
+          Excluir
         </Button>
       </div>
 
@@ -104,6 +127,45 @@ export default function InvitationOverviewPage({
           />
         </Card>
       </div>
+
+      <Dialog
+        open={confirmingDelete}
+        onOpenChange={(open) => {
+          if (!deleteInvitation.isPending) setConfirmingDelete(open);
+        }}
+        title="Excluir convite"
+        footer={
+          <>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setConfirmingDelete(false)}
+              disabled={deleteInvitation.isPending}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={handleConfirmDelete}
+              disabled={deleteInvitation.isPending}
+            >
+              {deleteInvitation.isPending ? "Excluindo…" : "Excluir"}
+            </Button>
+          </>
+        }
+      >
+        <p className={styles.dialogText}>
+          Tem certeza que deseja excluir <strong>{invitation.title}</strong>?
+          Esta ação remove o convite, todos os blocos e a lista de convidados.
+          Não dá para desfazer.
+        </p>
+        {deleteInvitation.error && (
+          <p className={styles.dialogError}>
+            {deleteInvitation.error.message}
+          </p>
+        )}
+      </Dialog>
     </Container>
   );
 }
