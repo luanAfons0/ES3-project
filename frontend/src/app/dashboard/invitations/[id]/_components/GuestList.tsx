@@ -1,5 +1,6 @@
 "use client";
 
+import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/Button/Button";
 import { Input } from "@/components/Input/Input";
@@ -62,8 +63,9 @@ export function GuestList({ guests, onAdd, onRemove, isAdding, addError }: Guest
                     className={styles.removeButton}
                     onClick={() => onRemove(guest.id)}
                     aria-label={`Remover ${guest.name}`}
+                    type="button"
                   >
-                    ✕
+                    <Trash2 size={16} aria-hidden />
                   </button>
                 </td>
               </tr>

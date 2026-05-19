@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import styles from "./RsvpButton.module.css";
 
 interface RsvpButtonProps {
@@ -10,7 +11,7 @@ export function RsvpButton({ label, disabled, onClick }: RsvpButtonProps) {
   return (
     <div className={styles.wrapper}>
       <button className={styles.button} disabled={disabled} onClick={onClick}>
-        <span className={styles.icon} aria-hidden>✓</span>
+        <Check size={18} className={styles.icon} aria-hidden />
         {label}
       </button>
     </div>

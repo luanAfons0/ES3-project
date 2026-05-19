@@ -1,6 +1,7 @@
 "use client";
 
 import * as RadixDialog from "@radix-ui/react-dialog";
+import { X } from "lucide-react";
 import type { ReactNode } from "react";
 import styles from "./Dialog.module.css";
 
@@ -23,7 +24,7 @@ function Dialog({ open, onOpenChange, title, children, footer }: DialogProps) {
               {title}
             </RadixDialog.Title>
             <RadixDialog.Close className={styles.close} aria-label="Fechar">
-              ✕
+              <X size={18} aria-hidden />
             </RadixDialog.Close>
           </div>
           {children}
