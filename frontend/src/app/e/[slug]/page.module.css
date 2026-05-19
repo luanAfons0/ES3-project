@@ -170,6 +170,22 @@
   line-height: 1.6;
 }
 
+.coverImage {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  max-height: 360px;
+  box-shadow: var(--shadow-md);
+}
+
+.invitationDescription {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--color-fg);
+  text-align: center;
+  white-space: pre-wrap;
+}
+
 .blocks {
   display: flex;
   flex-direction: column;

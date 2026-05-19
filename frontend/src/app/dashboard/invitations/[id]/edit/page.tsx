@@ -18,6 +18,8 @@ interface EditForm {
   slug: string;
   eventDate: string;
   eventLocation: string;
+  description: string;
+  coverImage: string;
 }
 
 export default function InvitationEditPage({
@@ -38,6 +40,8 @@ export default function InvitationEditPage({
     slug: "",
     eventDate: "",
     eventLocation: "",
+    description: "",
+    coverImage: "",
   });
   const [blocks, setBlocks] = useState<Block[]>([]);
   const initialized = useRef(false);
@@ -50,6 +54,8 @@ export default function InvitationEditPage({
         slug: invitation.slug,
         eventDate: invitation.eventDate,
         eventLocation: invitation.eventLocation,
+        description: invitation.description,
+        coverImage: invitation.coverImage,
       });
       setBlocks(fetchedBlocks);
     }
@@ -140,6 +146,41 @@ export default function InvitationEditPage({
                   handleFieldChange("eventLocation", e.target.value)
                 }
               />
+              <div className={styles.textareaWrapper}>
+                <label htmlFor="description" className={styles.textareaLabel}>
+                  Descrição
+                </label>
+                <textarea
+                  id="description"
+                  className={styles.textarea}
+                  value={form.description}
+                  onChange={(e) =>
+                    handleFieldChange("description", e.target.value)
+                  }
+                  rows={4}
+                  placeholder="Conte em poucas palavras sobre o evento…"
+                />
+              </div>
+              <div>
+                <Input
+                  id="coverImage"
+                  label="Imagem de capa (URL)"
+                  type="url"
+                  placeholder="https://…"
+                  value={form.coverImage}
+                  onChange={(e) =>
+                    handleFieldChange("coverImage", e.target.value)
+                  }
+                />
+                {form.coverImage && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={form.coverImage}
+                    alt=""
+                    className={styles.coverPreview}
+                  />
+                )}
+              </div>
             </div>
           </section>
         </aside>

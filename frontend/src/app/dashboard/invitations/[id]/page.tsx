@@ -86,8 +86,19 @@ export default function InvitationOverviewPage({
       <div className={styles.sections}>
         <Card className={styles.section}>
           <h2 className={styles.sectionTitle}>Detalhes do evento</h2>
+          {invitation.coverImage && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={invitation.coverImage}
+              alt=""
+              className={styles.cover}
+            />
+          )}
           <p className={styles.meta}>{formatDate(invitation.eventDate)}</p>
           <p className={styles.meta}>{invitation.eventLocation}</p>
+          {invitation.description && (
+            <p className={styles.description}>{invitation.description}</p>
+          )}
         </Card>
 
         <Card className={styles.section}>

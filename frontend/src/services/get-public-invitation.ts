@@ -5,6 +5,8 @@ interface PublicInvitationMeta {
   title: string;
   eventDate: string;
   eventLocation: string;
+  description: string;
+  coverImage: string;
 }
 
 export const getPublicInvitationKey = (slug: string) => ["public", slug] as const;

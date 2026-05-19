@@ -6,7 +6,7 @@ import { getInvitationsKey } from "./get-invitations";
 
 type SaveInvitationPayload = Pick<
   Invitation,
-  "title" | "slug" | "eventDate" | "eventLocation"
+  "title" | "slug" | "eventDate" | "eventLocation" | "description" | "coverImage"
 >;
 
 export function useSaveInvitation(id: string) {

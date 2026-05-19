@@ -21,6 +21,8 @@ export interface Invitation {
   slug: string;
   eventDate: string;
   eventLocation: string;
+  description: string;
+  coverImage: string;
   totalGuests: number;
   confirmed: number;
   declined: number;
@@ -31,6 +33,8 @@ export interface PublicInvitation {
   title: string;
   eventDate: string;
   eventLocation: string;
+  description: string;
+  coverImage: string;
   blocks: Block[];
   guestEmails: string[];
 }

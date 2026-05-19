@@ -81,6 +81,14 @@ export default function PublicInvitationPage({
     return (
       <div className={styles.page}>
         <div className={styles.gate}>
+          {invitation.coverImage && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={invitation.coverImage}
+              alt=""
+              className={styles.coverImage}
+            />
+          )}
           <h1 className={styles.gateTitle}>{invitation.title}</h1>
           <p className={styles.gateSubtitle}>Informe seu e-mail para acessar este convite.</p>
           <form onSubmit={handleGateSubmit} className={styles.gateForm}>
@@ -138,11 +146,23 @@ export default function PublicInvitationPage({
   return (
     <div className={styles.page}>
       <div className={styles.invitation}>
+        {invitation.coverImage && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={invitation.coverImage}
+            alt=""
+            className={styles.coverImage}
+          />
+        )}
         <header className={styles.invitationHeader}>
           <h1 className={styles.invitationTitle}>{invitation.title}</h1>
           <p className={styles.invitationMeta}>{formatDate(invitation.eventDate)}</p>
           <p className={styles.invitationMeta}>{invitation.eventLocation}</p>
         </header>
+
+        {invitation.description && (
+          <p className={styles.invitationDescription}>{invitation.description}</p>
+        )}
 
         <div className={styles.blocks}>
           {blocks.map((block) => {
