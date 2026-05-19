@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Fraunces, Inter } from "next/font/google";
+import { AuthProvider } from "@/components/AuthProvider/AuthProvider";
 import { QueryProvider } from "@/components/QueryProvider/QueryProvider";
 import { ThemeProvider } from "@/components/ThemeProvider/ThemeProvider";
 import "./globals.css";
@@ -39,7 +40,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body>
         <QueryProvider>
-          <ThemeProvider>{children}</ThemeProvider>
+          <AuthProvider>
+            <ThemeProvider>{children}</ThemeProvider>
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>

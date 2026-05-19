@@ -1,26 +1,15 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { Container } from "@/components/Container/Container";
 import { Logo } from "@/components/Logo/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle/ThemeToggle";
 import { Button } from "@/components/Button/Button";
+import { useAuth } from "@/components/AuthProvider/AuthProvider";
 import styles from "./layout.module.css";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!localStorage.getItem("token")) {
-      router.replace("/auth/login");
-    }
-  }, [router]);
-
-  function handleLogout() {
-    localStorage.removeItem("token");
-    router.push("/auth/login");
-  }
+  const { logout } = useAuth();
 
   return (
     <div className={styles.layout}>
@@ -29,7 +18,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <Logo href="/dashboard" />
           <div className={styles.headerActions}>
             <ThemeToggle />
-            <Button variant="ghost" size="sm" onClick={handleLogout}>
+            <Button variant="ghost" size="sm" onClick={() => logout()}>
               Sair
             </Button>
           </div>

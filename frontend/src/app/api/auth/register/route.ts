@@ -1,4 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import {
+  AUTH_COOKIE_NAME,
+  AUTH_TOKEN_TTL_MS,
+  encodeAuthToken,
+} from "@/lib/auth-token";
 
 // Mock register handler for testing without a real backend.
 // Remove this file when the real backend is connected.
@@ -10,19 +16,24 @@ export async function POST(request: NextRequest) {
   if (TAKEN_EMAILS.includes(email)) {
     return NextResponse.json(
       { message: "Este e-mail já está cadastrado." },
-      { status: 409 }
+      { status: 409 },
     );
   }
 
-  return NextResponse.json(
+  const userId = crypto.randomUUID();
+  const token = encodeAuthToken({ sub: userId, name, email });
+
+  const res = NextResponse.json(
     {
-      token: `mock-jwt-${Date.now()}`,
-      user: {
-        id: crypto.randomUUID(),
-        name,
-        email,
-      },
+      user: { id: userId, name, email },
     },
-    { status: 201 }
+    { status: 201 },
   );
+  res.cookies.set(AUTH_COOKIE_NAME, token, {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: AUTH_TOKEN_TTL_MS / 1000,
+  });
+  return res;
 }
