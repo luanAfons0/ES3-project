@@ -4,6 +4,7 @@ import { Fraunces, Inter } from "next/font/google";
 import { AuthProvider } from "@/components/AuthProvider/AuthProvider";
 import { QueryProvider } from "@/components/QueryProvider/QueryProvider";
 import { ThemeProvider } from "@/components/ThemeProvider/ThemeProvider";
+import { Toaster } from "@/components/Toast";
 import "./globals.css";
 
 const inter = Inter({
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <ThemeProvider>{children}</ThemeProvider>
           </AuthProvider>
         </QueryProvider>
+        <Toaster />
       </body>
     </html>
   );

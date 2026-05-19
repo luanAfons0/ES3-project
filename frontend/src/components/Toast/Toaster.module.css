@@ -1,0 +1,92 @@
+.region {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-width: 240px;
+  max-width: 360px;
+  padding: 0.75rem 0.875rem;
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  font-size: 0.875rem;
+  color: var(--color-fg);
+  pointer-events: auto;
+  animation: enter 200ms ease-out;
+}
+
+.icon {
+  flex-shrink: 0;
+}
+
+.message {
+  flex: 1;
+  line-height: 1.45;
+}
+
+.success .icon {
+  color: var(--color-success);
+}
+
+.error .icon {
+  color: var(--color-danger);
+}
+
+.info .icon {
+  color: var(--color-primary);
+}
+
+.dismiss {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-muted);
+  padding: 0 0.25rem;
+  font-size: 1.125rem;
+  line-height: 1;
+  border-radius: var(--radius-sm);
+}
+
+.dismiss:hover {
+  color: var(--color-fg);
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .region {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+  }
+  .toast {
+    min-width: 0;
+    max-width: none;
+  }
+}
