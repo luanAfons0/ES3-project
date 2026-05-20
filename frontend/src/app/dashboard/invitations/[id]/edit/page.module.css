@@ -14,8 +14,10 @@
 .page {
   display: flex;
   flex-direction: column;
-  /* Bleed past the dashboard main's top padding only — main has no inline padding */
+  /* Bleed past dashboard main's vertical padding so we fill viewport exactly. */
   margin-top: -2.75rem;
+  margin-bottom: -2.75rem;
+  height: calc(100dvh - 61px);
 }
 
 /* ── Toolbar ─────────────────────────────────────────── */
@@ -29,9 +31,7 @@
   background: color-mix(in srgb, var(--color-bg) 92%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  position: sticky;
-  top: 61px; /* height of the dashboard header */
-  z-index: 4;
+  flex-shrink: 0;
 }
 
 .pageTitle {
@@ -63,37 +63,27 @@
 .body {
   display: grid;
   grid-template-columns: 360px 1fr;
-  align-items: start;
-  min-height: calc(100dvh - 61px - 53px); /* fill below dashboard header + toolbar */
+  flex: 1;
+  min-height: 0; /* allow grid children to shrink and scroll internally */
+  overflow: hidden;
 }
 
 /* ── Left panel ──────────────────────────────────────── */
 
 .panel {
-  border-right: 1px solid var(--color-border);
-  padding: 1.75rem 1.5rem;
+  padding: 0.25rem 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  position: sticky;
-  top: calc(61px + 53px); /* dashboard header + toolbar */
-  align-self: start;
-  max-height: calc(100dvh - 61px - 53px);
   overflow-y: auto;
+  min-height: 0;
 }
 
+/* Loading-skeleton uses these — accordion content owns its own padding. */
 .section {
   display: flex;
   flex-direction: column;
   gap: 1.125rem;
-}
-
-.sectionTitle {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  color: var(--color-muted);
+  padding-block: 1.25rem;
 }
 
 .fields {
@@ -159,6 +149,22 @@
   max-height: 160px;
 }
 
+/* ── Drag overlay ghost ──────────────────────────────── */
+
+.dragGhost {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.875rem;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
+  pointer-events: none;
+  letter-spacing: 0.01em;
+}
+
 /* ── Right canvas ────────────────────────────────────── */
 
 .canvas {
@@ -166,8 +172,10 @@
   padding: 3rem 2rem;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  min-height: 100%;
+  align-items: stretch;
+  overflow-y: auto;
+  min-height: 0;
+  border-left: 1px solid var(--color-border);
 }
 
 .canvasDoc {
@@ -178,6 +186,8 @@
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-card);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .canvasHeader {
@@ -234,23 +244,31 @@
 .canvasBody {
   padding: 2rem;
   min-height: 360px;
+  flex: 1;
 }
 
 /* ── Responsive ──────────────────────────────────────── */
 
 @media (max-width: 860px) {
+  .page {
+    height: auto;
+    margin-bottom: 0;
+  }
+
   .body {
     grid-template-columns: 1fr;
+    flex: initial;
+    overflow: visible;
   }
 
   .panel {
-    position: static;
-    max-height: none;
-    border-right: none;
+    overflow-y: visible;
     border-bottom: 1px solid var(--color-border);
   }
 
   .canvas {
     padding: 1.5rem 1rem;
+    border-left: none;
+    overflow-y: visible;
   }
 }
