@@ -11,7 +11,7 @@ import { GripVertical, Trash2 } from "lucide-react";
 import type { Block } from "@/lib/types";
 import styles from "./BlockEditor.module.css";
 
-export type { BlockType, Block } from "@/lib/types";
+export type { Block } from "@/lib/types";
 
 export const CANVAS_DROPPABLE_ID = "canvas-drop";
 
@@ -24,13 +24,22 @@ const BLOCK_TYPE_LABEL = {
 
 interface SortableBlockProps {
   block: Block;
-  onChange: (id: string, patch: Partial<Pick<Block, "content" | "link">>) => void;
+  onChange: (
+    id: string,
+    patch: Partial<Pick<Block, "content" | "link">>,
+  ) => void;
   onRemove: (id: string) => void;
 }
 
 function SortableBlock({ block, onChange, onRemove }: SortableBlockProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: block.id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: block.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -114,7 +123,10 @@ interface BlockEditorProps {
 export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
   const { isOver, setNodeRef } = useDroppable({ id: CANVAS_DROPPABLE_ID });
 
-  function handleBlockPatch(id: string, patch: Partial<Pick<Block, "content" | "link">>) {
+  function handleBlockPatch(
+    id: string,
+    patch: Partial<Pick<Block, "content" | "link">>,
+  ) {
     onChange(blocks.map((b) => (b.id === id ? { ...b, ...patch } : b)));
   }
 
@@ -133,12 +145,16 @@ export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
         .filter(Boolean)
         .join(" ")}
     >
-      <SortableContext items={blocks.map((b) => b.id)} strategy={verticalListSortingStrategy}>
+      <SortableContext
+        items={blocks.map((b) => b.id)}
+        strategy={verticalListSortingStrategy}
+      >
         {blocks.length === 0 ? (
           <div className={styles.empty}>
             <p className={styles.emptyTitle}>Comece pelo primeiro bloco</p>
             <p className={styles.emptyHint}>
-              Arraste um elemento do painel à esquerda ou clique em um para adicionar.
+              Arraste um elemento do painel à esquerda ou clique em um para
+              adicionar.
             </p>
           </div>
         ) : (

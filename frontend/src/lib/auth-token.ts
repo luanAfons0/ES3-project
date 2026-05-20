@@ -4,7 +4,7 @@
 export const AUTH_COOKIE_NAME = "wellcard_auth";
 export const AUTH_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
-export interface AuthTokenPayload {
+interface AuthTokenPayload {
   sub: string;
   name: string;
   email: string;

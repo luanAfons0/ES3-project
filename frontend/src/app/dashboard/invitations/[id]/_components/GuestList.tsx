@@ -7,8 +7,6 @@ import { Input } from "@/components/Input/Input";
 import type { Guest, RsvpStatus } from "@/lib/types";
 import styles from "./GuestList.module.css";
 
-export type { RsvpStatus, Guest } from "@/lib/types";
-
 interface GuestListProps {
   guests: Guest[];
   onAdd: (name: string, email: string) => Promise<unknown>;
@@ -23,7 +21,13 @@ const STATUS_LABEL: Record<RsvpStatus, string> = {
   declined: "Recusado",
 };
 
-export function GuestList({ guests, onAdd, onRemove, isAdding, addError }: GuestListProps) {
+export function GuestList({
+  guests,
+  onAdd,
+  onRemove,
+  isAdding,
+  addError,
+}: GuestListProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 

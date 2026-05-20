@@ -9,7 +9,7 @@ interface PublicInvitationMeta {
   coverImage: string;
 }
 
-export const getPublicInvitationKey = (slug: string) => ["public", slug] as const;
+const getPublicInvitationKey = (slug: string) => ["public", slug] as const;
 
 export function useGetPublicInvitation(slug: string) {
   return useQuery({
