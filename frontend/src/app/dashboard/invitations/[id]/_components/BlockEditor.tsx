@@ -1,29 +1,26 @@
 "use client";
 
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-} from "@dnd-kit/core";
+import { useDroppable } from "@dnd-kit/core";
 import {
   SortableContext,
-  sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
-  arrayMove,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
-import { Button } from "@/components/Button/Button";
-import type { Block, BlockType } from "@/lib/types";
+import { GripVertical, Trash2 } from "lucide-react";
+import type { Block } from "@/lib/types";
 import styles from "./BlockEditor.module.css";
 
 export type { BlockType, Block } from "@/lib/types";
+
+export const CANVAS_DROPPABLE_ID = "canvas-drop";
+
+const BLOCK_TYPE_LABEL = {
+  text: "texto",
+  image: "imagem",
+  button: "botão",
+  rsvp: "rsvp",
+} as const;
 
 interface SortableBlockProps {
   block: Block;
@@ -114,31 +111,8 @@ interface BlockEditorProps {
   onChange: (blocks: Block[]) => void;
 }
 
-const BLOCK_TYPES: BlockType[] = ["text", "image", "button", "rsvp"];
-
-const BLOCK_TYPE_LABEL: Record<BlockType, string> = {
-  text: "texto",
-  image: "imagem",
-  button: "botão",
-  rsvp: "rsvp",
-};
-
 export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
-  const [addingType, setAddingType] = useState(false);
-
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-  );
-
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-    if (over && active.id !== over.id) {
-      const oldIndex = blocks.findIndex((b) => b.id === active.id);
-      const newIndex = blocks.findIndex((b) => b.id === over.id);
-      onChange(arrayMove(blocks, oldIndex, newIndex));
-    }
-  }
+  const { isOver, setNodeRef } = useDroppable({ id: CANVAS_DROPPABLE_ID });
 
   function handleBlockPatch(id: string, patch: Partial<Pick<Block, "content" | "link">>) {
     onChange(blocks.map((b) => (b.id === id ? { ...b, ...patch } : b)));
@@ -148,47 +122,36 @@ export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
     onChange(blocks.filter((b) => b.id !== id));
   }
 
-  function handleAdd(type: BlockType) {
-    const newBlock: Block = { id: crypto.randomUUID(), type, content: "" };
-    onChange([...blocks, newBlock]);
-    setAddingType(false);
-  }
-
   return (
-    <div className={styles.editor}>
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={blocks.map((b) => b.id)} strategy={verticalListSortingStrategy}>
-          {blocks.length === 0 && (
-            <p className={styles.empty}>Nenhum bloco ainda. Adicione um abaixo.</p>
-          )}
-          {blocks.map((block) => (
+    <div
+      ref={setNodeRef}
+      className={[
+        styles.editor,
+        blocks.length === 0 ? styles.editorEmpty : null,
+        isOver ? styles.editorOver : null,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      <SortableContext items={blocks.map((b) => b.id)} strategy={verticalListSortingStrategy}>
+        {blocks.length === 0 ? (
+          <div className={styles.empty}>
+            <p className={styles.emptyTitle}>Comece pelo primeiro bloco</p>
+            <p className={styles.emptyHint}>
+              Arraste um elemento do painel à esquerda ou clique em um para adicionar.
+            </p>
+          </div>
+        ) : (
+          blocks.map((block) => (
             <SortableBlock
               key={block.id}
               block={block}
               onChange={handleBlockPatch}
               onRemove={handleRemove}
             />
-          ))}
-        </SortableContext>
-      </DndContext>
-
-      {addingType ? (
-        <div className={styles.typePicker}>
-          <span className={styles.typePickerLabel}>Escolha o tipo:</span>
-          {BLOCK_TYPES.map((type) => (
-            <Button key={type} variant="ghost" size="sm" onClick={() => handleAdd(type)}>
-              {BLOCK_TYPE_LABEL[type]}
-            </Button>
-          ))}
-          <Button variant="ghost" size="sm" onClick={() => setAddingType(false)}>
-            Cancelar
-          </Button>
-        </div>
-      ) : (
-        <Button variant="ghost" size="sm" onClick={() => setAddingType(true)}>
-          <Plus size={14} aria-hidden /> Adicionar bloco
-        </Button>
-      )}
+          ))
+        )}
+      </SortableContext>
     </div>
   );
 }

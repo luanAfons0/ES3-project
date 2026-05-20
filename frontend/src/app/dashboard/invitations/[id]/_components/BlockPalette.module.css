@@ -1,0 +1,79 @@
+.palette {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hint {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  line-height: 1.5;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.375rem;
+  padding: 0.75rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  cursor: grab;
+  text-align: left;
+  font-family: var(--font-sans);
+  color: var(--color-fg);
+  user-select: none;
+  touch-action: none;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.tile:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-primary) 50%, var(--color-border));
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-bg));
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.tile:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.tile:active {
+  cursor: grabbing;
+}
+
+.tileDragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+.tileDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.icon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+}
+
+.description {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  line-height: 1.3;
+}
